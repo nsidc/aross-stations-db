@@ -73,6 +73,19 @@ aross-stations-db load  # Load the tables from event files
 ```
 
 
+### Inspect the database
+
+In addition to manually querying the database with `psql`, you can use the included
+adminer container for quick inspection. Navigate in your browser to
+`http://localhost:80` and enter:
+
+* System: PostgreSQL
+* Server: `aross-stations-db`
+* Username: `aross`
+* Password: Whatever you specified in the environment variable
+* Database: `aross`
+
+
 <!-- prettier-ignore-start -->
 [actions-badge]:            https://github.com/nsidc/aross-stations-db/workflows/CI/badge.svg
 [actions-link]:             https://github.com/nsidc/aross-stations-db/actions
