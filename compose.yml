@@ -1,0 +1,11 @@
+services:
+  aross-stations-db:
+    image: "postgis/postgis:16-3.4-alpine"
+
+    ports:
+      # TODO: Don't expose in prod
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "aross"
+      POSTGRES_USER: "aross"
+      POSTGRES_PASSWORD: null

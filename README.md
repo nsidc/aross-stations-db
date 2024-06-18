@@ -12,10 +12,18 @@
 
 ## Install
 
-TODO
+For now, you can install from this repository. TODO: PyPI if we decide this package
+should continue to exist and not be moved or renamed :)
+
+```bash
+pip install git+https://github.com/nsidc/aross-stations-db.git
+```
 
 
 ### Dev install
+
+With this method, you can change the source code and the changes will be reflected
+without needing to re-install.
 
 ```bash
 pip install --editable .
@@ -24,19 +32,44 @@ pip install --editable .
 
 ## Usage
 
+Everything presumes the current working directory is the root of this repo unless
+otherwise stated.
+
+
 ### Set envvars
 
+Create a `.env` file or otherwise set the envvars. Your `.env` file might look like this
+if you're running a local database:
+
 ```bash
-export AROSS_DB_CONNSTR="postgresql://hostname/dbname?user=username&password=supersecret"
+POSTGRES_PASSWORD="supersecret"
+AROSS_DB_CONNSTR="postgresql+psycopg://aross:${POSTGRES_PASSWORD}@localhost:5432/aross"
 # NOTE: This dir should contain "metadata" and "events" subdirectories:
-export AROSS_DATA_BASEDIR="/path/to/aross-data-dir"
+AROSS_DATA_BASEDIR="/path/to/aross-data-dir"
 ```
 
 
-### Run
+### Start a fresh database
+
+This repo provides a quickstart database in Docker, defined in `compose.yml`. Once
+started, you (and our code!) can connect on port `5432`.
 
 ```bash
-python -m aross_stations_db
+docker compose up --detach
+```
+
+At this point you can manually connect to your database with:
+
+```bash
+psql -h localhost -U aross
+```
+
+
+### Run ingest
+
+```bash
+aross-stations-db init  # Create empty tables (deleting any pre-existing ones)
+aross-stations-db load  # Load the tables from event files
 ```
 
 

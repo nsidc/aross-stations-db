@@ -1,10 +1,5 @@
-from aross_stations_db.config import Settings
-
-
-def main():
-    config = Settings()
-    breakpoint()
+from aross_stations_db.cli import cli
 
 
 if __name__ == "__main__":
-    main()
+    cli()
