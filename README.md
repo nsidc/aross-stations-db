@@ -29,7 +29,7 @@ pip install --editable .
 ```bash
 export AROSS_DB_CONNSTR="postgresql://hostname/dbname?user=username&password=supersecret"
 # NOTE: This dir should contain "metadata" and "events" subdirectories:
-export AROSS_DATA_DIR="/path/to/aross-data-dir"
+export AROSS_DATA_BASEDIR="/path/to/aross-data-dir"
 ```
 
 
