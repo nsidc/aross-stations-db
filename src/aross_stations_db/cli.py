@@ -1,10 +1,16 @@
-import csv
-import io
-
 import click
+from loguru import logger
 
 from aross_stations_db.config import Settings
-from aross_stations_db.db import create_tables
+from aross_stations_db.db import (
+    create_tables,
+    load_events,
+    load_stations,
+)
+from aross_stations_db.source_data import (
+    get_events,
+    get_stations,
+)
 
 config = Settings()
 
@@ -17,17 +23,18 @@ def cli():
 @cli.command
 def init():
     """Create the database tables."""
-    create_tables(config.db_engine)
+    create_tables(config.db_session)
+
+    logger.success("Tables created")
 
 
 @cli.command
 def load():
     """Load the database tables from files on disk."""
+    stations = get_stations(config.stations_metadata_filepath)
+    events = get_events(config.events_dir)
 
-    stations_metadata_str = config.stations_metadata_filepath.read_text()
-    stations = list(csv.DictReader(io.StringIO(stations_metadata_str)))
+    load_stations(stations, session=config.db_session)
+    load_events(events, session=config.db_session)
 
-    events = config.events_dir.glob("*.event.csv")
-
-    load_stations(stations)
-    load_events(events)
+    logger.success("Data loaded")
