@@ -1,0 +1,53 @@
+project:
+  type: "website"
+
+
+website:
+  title: "AROSS Stations Database"
+  site-url: "https://nsidc.github.io/aross-stations-db"
+
+  repo-url: &repo-url "https://github.com/nsidc/aross-stations-db"
+  repo-actions:
+    - "edit"
+    - "source"
+    - "issue"
+  repo-subdir: "doc"
+
+  page-footer:
+    right: "This page is built with [Quarto](https://quarto.org/)."
+    left: "&copy;"
+
+
+  sidebar:
+    style: "docked"
+    search: true
+    collapse-level: 2
+    tools:
+      - icon: "github"
+        href: *repo-url
+    contents:
+      - text: "🛠️ Contributing"
+        href: "contributing.md"
+      # - text: "✨ Tutorials (TODO)"
+      #   href: "tutorial/index.md"
+      #   contents: "tutorial/**/*.md"
+      # - text: "⁉️ How to"
+      #   href: "how-to/index.md"
+      #   contents: "how-to/**/*.md"
+      # - text: "📚 Reference"
+      #   href: "reference/index.md"
+      #   contents: "reference/**/*.md"
+      # # For discussions/concepts: 💭 or 💬?
+
+      # # Separator:
+      # - text: "---"
+
+      # - text: "🗒️ Notes"
+      #   href: "notes/index.md"
+
+
+format:
+  html:
+    from: "markdown+emoji"
+    theme: ["cosmo", "style.scss"]
+    toc: true

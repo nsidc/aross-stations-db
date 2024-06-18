@@ -1,0 +1,15 @@
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+version: 2
+
+build:
+  os: "ubuntu-22.04"
+  commands:
+    # https://quarto.org/docs/download/tarball.html
+    - "wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.4.555/quarto-1.4.555-linux-amd64.tar.gz"
+    - "mkdir ~/opt && tar -C ~/opt -xvzf quarto*.tar.gz"
+    - "mkdir ~/bin && ln -s ~/opt/quarto-1.4.555/bin/quarto ~/bin/quarto"
+    - "cd doc && ~/bin/quarto render"
+    - "mkdir --parents $READTHEDOCS_OUTPUT/html/"
+    - "mv doc/_site/* $READTHEDOCS_OUTPUT/html/."
