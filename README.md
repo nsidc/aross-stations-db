@@ -9,6 +9,37 @@
 
 [![GitHub Discussion][github-discussions-badge]][github-discussions-link]
 
+
+## Install
+
+TODO
+
+
+### Dev install
+
+```bash
+pip install --editable .
+```
+
+
+## Usage
+
+### Set envvars
+
+```bash
+export AROSS_DB_CONNSTR="postgresql://hostname/dbname?user=username&password=supersecret"
+# NOTE: This dir should contain "metadata" and "events" subdirectories:
+export AROSS_DATA_DIR="/path/to/aross-data-dir"
+```
+
+
+### Run
+
+```bash
+python -m aross_stations_db
+```
+
+
 <!-- prettier-ignore-start -->
 [actions-badge]:            https://github.com/nsidc/aross-stations-db/workflows/CI/badge.svg
 [actions-link]:             https://github.com/nsidc/aross-stations-db/actions
@@ -21,5 +52,4 @@
 [pypi-version]:             https://img.shields.io/pypi/v/aross-stations-db
 [rtd-badge]:                https://readthedocs.org/projects/aross-stations-db/badge/?version=latest
 [rtd-link]:                 https://aross-stations-db.readthedocs.io/en/latest/?badge=latest
-
 <!-- prettier-ignore-end -->
