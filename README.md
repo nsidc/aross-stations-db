@@ -38,13 +38,25 @@ without needing to re-install.
 pip install --editable ".[dev]"
 ```
 
-If installed correctly, you can now test:
 
+#### Checks
+
+If installed correctly, you can now lint & format the code, which is run through
+`pre-commit` because these tasks don't require installing the package:
+
+```bash
+pre-commit run --all-files
 ```
+
+You can also type-check and test the code, which are run through `nox` because this
+_does_ require installing the package:
+
+```bash
 nox
 ```
 
-To reuse an already-created env, add `-R`.
+> [!TIP]
+> To reuse an already-created Nox env, add `-R`.
 
 
 ## Usage
