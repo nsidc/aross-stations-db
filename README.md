@@ -35,7 +35,7 @@ With this method, you can change the source code and the changes will be reflect
 without needing to re-install.
 
 ```bash
-pip install --editable .
+pip install --editable ".[dev]"
 ```
 
 
