@@ -87,7 +87,7 @@ def build_api_docs(session: nox.Session) -> None:
 
 
 @nox.session
-def build_app(session: nox.Session) -> None:
+def build_pkg(session: nox.Session) -> None:
     """Build a source distribution and binary distribution (wheel)."""
 
     build_path = DIR.joinpath("build")

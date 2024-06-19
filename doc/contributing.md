@@ -7,6 +7,7 @@ description of best practices for developing scientific packages.
 
 [spc-dev-intro]: https://learn.scientific-python.org/development/
 
+
 ## Quick development
 
 The fastest way to start with development is to use nox. If you don't have nox,
@@ -16,59 +17,63 @@ If you don't have pipx (pip for applications), then you can install with
 pip is reasonable). If you use macOS, then pipx and nox are both in brew, use
 `brew install pipx nox`.
 
-To use, run `nox`. This will lint and test using every installed version of
+To use, run `nox`. This will typecheck and test using every installed version of
 Python on your system, skipping ones that are not installed. You can also run
 specific jobs:
 
 ```console
-$ nox -s lint  # Lint only
-$ nox -s tests  # Python tests
-$ nox -s docs -- --serve  # Build and serve the docs
-$ nox -s build  # Make an SDist and wheel
+$ nox -s typecheck              # Typecheck only
+$ nox -s tests                  # Python tests
+$ nox -s build_docs -- --serve  # Build and serve the docs
+$ nox -s build_pkg              # Make an SDist and wheel
 ```
 
 Nox handles everything for you, including setting up an temporary virtual
 environment for each run.
 
+
 ## Setting up a development environment manually
 
-You can set up a development environment by running:
+You can set up a development environment using the environment manager of your choice.
+For example, using `venv`:
 
 ```bash
 python3 -m venv .venv
 source ./.venv/bin/activate
-pip install -v -e .[dev]
 ```
 
-If you have the
-[Python Launcher for Unix](https://github.com/brettcannon/python-launcher), you
-can instead do:
+Once you've created and activated an environment, install the package in editable mode:
 
 ```bash
-py -m venv .venv
-py -m install -v -e .[dev]
+pip install --editable .[dev]
 ```
 
-## Post setup
+
+## Automated checks and fixes
 
 You should prepare pre-commit, which will help you by checking that commits pass
-required checks:
+required checks and autofixing some issues. To set it up to run automatically on each
+commit **(recommended)**:
 
 ```bash
-pip install pre-commit # or brew install pre-commit on macOS
 pre-commit install # Will install a pre-commit hook into the git repo
 ```
 
-You can also/alternatively run `pre-commit run` (changes only) or
-`pre-commit run --all-files` to check even without installing the hook.
+To check the full repository manually:
+
+```bash
+pre-commit run --all-files
+```
+
 
 ## Testing
 
 Use pytest to run the unit checks:
 
 ```bash
-pytest
+nox -s test
 ```
+
 
 ## Coverage
 
@@ -78,28 +83,17 @@ Use pytest-cov to generate coverage reports:
 pytest --cov=aross-stations-db
 ```
 
+
 ## Building docs
 
 You can build the docs using:
 
 ```bash
-nox -s docs
+nox -s build_docs
 ```
 
 You can see a preview with:
 
 ```bash
-nox -s docs -- --serve
+nox -s build_docs -- --serve
 ```
-
-## Pre-commit
-
-This project uses pre-commit for all style checking. While you can run it with
-nox, this is such an important tool that it deserves to be installed on its own.
-Install pre-commit and run:
-
-```bash
-pre-commit run -a
-```
-
-to check all files.
