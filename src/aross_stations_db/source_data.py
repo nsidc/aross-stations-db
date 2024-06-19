@@ -17,7 +17,7 @@ def get_events(events_dir: Path) -> Iterator[dict]:
     for event_fp in get_event_files(events_dir):
         station_id = event_fp.stem.split(".")[0]
 
-        with open(event_fp) as event_file:
+        with event_fp.open() as event_file:
             events = list(csv.DictReader(event_file))
 
         for event in events:
