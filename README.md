@@ -81,6 +81,8 @@ aross-stations-db init  # Create empty tables (deleting any pre-existing ones)
 aross-stations-db load  # Load the tables from event files
 ```
 
+From a fast disk, this should take under 2 minutes.
+
 
 ### Inspect the database
 
