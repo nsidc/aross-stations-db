@@ -86,6 +86,26 @@ adminer container for quick inspection. Navigate in your browser to
 * Database: `aross`
 
 
+#### Example query
+
+```sql
+select event.*
+from event
+join station on event.station_id = station.id
+where
+  ST_Within(
+    station.location,
+    ST_SetSRID(
+      ST_GeomFromText('POLYGON ((-159.32130625160698 69.56469019745796, -159.32130625160698 68.08208920517862, -150.17196253090276 68.08208920517862, -150.17196253090276 69.56469019745796, -159.32130625160698 69.56469019745796))'),
+      4326
+    )
+  )
+  AND event.start_timestamp > '2023-01-01'::date
+  AND event.end_timestamp < '2023-06-01'::date
+;
+```
+
+
 <!-- prettier-ignore-start -->
 [actions-badge]:            https://github.com/nsidc/aross-stations-db/workflows/CI/badge.svg
 [actions-link]:             https://github.com/nsidc/aross-stations-db/actions
