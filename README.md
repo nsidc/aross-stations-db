@@ -38,6 +38,14 @@ without needing to re-install.
 pip install --editable ".[dev]"
 ```
 
+If installed correctly, you can now test:
+
+```
+nox
+```
+
+To reuse an already-created env, add `-R`.
+
 
 ## Usage
 
