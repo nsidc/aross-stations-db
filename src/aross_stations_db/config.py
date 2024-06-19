@@ -16,17 +16,20 @@ class Settings(BaseSettings):
     DATA_BASEDIR: DirectoryPath
     DB_CONNSTR: PostgresDsn
 
-    @computed_field
+    # TODO: Specifically ignore this type of error instead of using type-ignore; but
+    # mypy doesn't yet categorize this error in its own type, so we need to wait for a
+    # release, likely 1.11:  https://github.com/python/mypy/pull/16571/files
+    @computed_field  # type:ignore[misc]
     @cached_property
     def events_dir(self) -> DirectoryPath:
         return self.DATA_BASEDIR / "events"
 
-    @computed_field
+    @computed_field  # type:ignore[misc]
     @cached_property
     def stations_metadata_filepath(self) -> FilePath:
         return self.DATA_BASEDIR / "metadata" / "aross.asos_stations.metadata.csv"
 
-    @computed_field
+    @computed_field  # type:ignore[misc]
     @cached_property
     def db_session(self) -> Session:
         engine = create_engine(str(self.DB_CONNSTR))

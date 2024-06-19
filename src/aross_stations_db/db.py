@@ -17,7 +17,7 @@ def create_tables(session: Session) -> None:
     Base.metadata.create_all(session.get_bind())
 
 
-def load_stations(stations: Iterator[dict], *, session: Session) -> None:
+def load_stations(stations: list[dict[str, str]], *, session: Session) -> None:
     session.add_all(
         [
             Station(
@@ -32,7 +32,7 @@ def load_stations(stations: Iterator[dict], *, session: Session) -> None:
     session.commit()
 
 
-def load_events(events: Iterator[dict], *, session: Session) -> None:
+def load_events(events: Iterator[dict[str, str]], *, session: Session) -> None:
     session.add_all(
         [
             Event(
@@ -46,5 +46,5 @@ def load_events(events: Iterator[dict], *, session: Session) -> None:
     session.commit()
 
 
-def _station_location_wkt(station: dict) -> str:
+def _station_location_wkt(station: dict[str, str]) -> str:
     return f"SRID=4326;POINT({station['longitude']} {station['latitude']})"
