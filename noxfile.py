@@ -9,7 +9,7 @@ import nox
 DIR = Path(__file__).parent.resolve()
 
 nox.needs_version = ">=2024.3.2"
-nox.options.sessions = ["lint", "test"]
+nox.options.sessions = ["lint", "typecheck", "test"]
 nox.options.default_venv_backend = "uv|virtualenv"
 
 
@@ -20,6 +20,12 @@ def lint(session: nox.Session) -> None:
     session.run(
         "pre-commit", "run", "--all-files", "--show-diff-on-failure", *session.posargs
     )
+
+
+@nox.session
+def typecheck(session: nox.Session) -> None:
+    session.install(".[test]")
+    session.run("mypy")
 
 
 @nox.session
