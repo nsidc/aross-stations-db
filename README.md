@@ -9,11 +9,20 @@
 
 [![GitHub Discussion][github-discussions-badge]][github-discussions-link]
 
+Reads ASOS station data from disk on the NSIDC archive to create a temporally and
+geospatially indexed database to quickly search events.
+
+> [!NOTE]
+> TODO: Is this data available publicly and documented? How is it produced? Links!
+
 
 ## Install
 
-For now, you can install from this repository. TODO: PyPI if we decide this package
-should continue to exist and not be moved or renamed :)
+For now, you can install from this repository.
+
+> [!NOTE]
+> TODO: Publish to PyPI if we decide this package should continue to exist and not be
+> moved or renamed :)
 
 ```bash
 pip install git+https://github.com/nsidc/aross-stations-db.git
