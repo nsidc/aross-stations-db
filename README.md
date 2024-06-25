@@ -142,6 +142,12 @@ where
 ### Run API
 
 ```bash
+fastapi run src/aross_stations_db/api
+```
+
+Or, to get hot reloading for development:
+
+```bash
 fastapi dev src/aross_stations_db/api
 ```
 
@@ -152,6 +158,24 @@ fastapi dev src/aross_stations_db/api
 http://127.0.0.1:8000/v1/?start=2023-01-01&end=2023-06-01&polygon=POLYGON%20((-159.32130625160698%2069.56469019745796,%20-159.32130625160698%2068.08208920517862,%20-150.17196253090276%2068.08208920517862,%20-150.17196253090276%2069.56469019745796,%20-159.32130625160698%2069.56469019745796))
 ```
 </details>
+
+
+## Troubleshooting
+
+### `Permission denied` errors from FastAPI
+
+When this error occurs, the webserver still responds to queries, but hot-reloading
+doesn't work.
+
+You may need to grant read access to the `_data/` directory if you're running locally.
+The problem is that FastAPI's hot-reloading functionality in dev needs to watch the
+current directory for changes, and I don't know of a way to ignore this directory that
+is usually not readable. The directory is likely owned by root, assuming it was created
+automatically by Docker, so you may need to use `sudo`.
+
+```bash
+sudo chmod -R ugo+r _data
+```
 
 
 <!-- prettier-ignore-start -->
