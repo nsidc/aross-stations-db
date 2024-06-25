@@ -24,12 +24,25 @@ For now, you can install from this repository.
 > TODO: Publish to PyPI if we decide this package should continue to exist and not be
 > moved or renamed :)
 
+> [!NOTE]
+> TODO: Dockerize the package
+
 ```bash
 pip install git+https://github.com/nsidc/aross-stations-db.git
 ```
 
+> [!WARNING]
+> When installed this way, `.env`
+
 
 ### Dev install
+
+> [!NOTE]
+> Don't worry about this unless you intend to change the code!
+
+> [!NOTE]
+> TODO: Extract dev stuff to separate doc? OR make a collapsible dev quickstart in the
+> README?
 
 With this method, you can change the source code and the changes will be reflected
 without needing to re-install.
@@ -67,7 +80,7 @@ otherwise stated.
 
 ### Set envvars
 
-Create a `.env` file or otherwise set the envvars. Your `.env` file might look like this
+Create a `.env` file or otherwise `export` the envvars. Your `.env` file might look like this
 if you're running a local database:
 
 ```bash
@@ -87,11 +100,21 @@ started, you (and our code!) can connect on port `5432`.
 docker compose up --detach
 ```
 
-At this point you can manually connect to your database with:
 
-```bash
-psql -h localhost -U aross
-```
+### Inspect the database
+
+You can use the included [Adminer](https://www.adminer.org/) container for quick
+inspection. Navigate in your browser to `http://localhost:80` and enter:
+
+* System: PostgreSQL
+* Server: `aross-stations-db`
+* Username: `aross`
+* Password: Whatever you specified in the environment variable
+* Database: `aross`
+
+> [!NOTE]
+> At this point, the database is empty. We're just verifying we can connect. Continue to
+> ingest next!
 
 
 ### Run ingest
@@ -103,22 +126,10 @@ aross-stations-db load  # Load the tables from event files
 
 From a fast disk, this should take under 2 minutes.
 
-
-### Inspect the database
-
-In addition to manually querying the database with `psql`, you can use the included
-adminer container for quick inspection. Navigate in your browser to
-`http://localhost:80` and enter:
-
-* System: PostgreSQL
-* Server: `aross-stations-db`
-* Username: `aross`
-* Password: Whatever you specified in the environment variable
-* Database: `aross`
-
+Now, you can use Adminer's SQL Query menu to select some data:
 
 <details>
-<summary>Example query</summary>
+<summary>Example SQL query</summary>
 
 ```sql
 select event.*
@@ -132,14 +143,17 @@ where
       4326
     )
   )
-  AND event.start_timestamp > '2023-01-01'::date
-  AND event.end_timestamp < '2023-06-01'::date
+  AND event.time_start > '2023-01-01'::date
+  AND event.time_end < '2023-06-01'::date
 ;
 ```
 </details>
 
 
 ### Run API
+
+> [!NOTE]
+> TODO: Dockerize this component
 
 ```bash
 fastapi run src/aross_stations_db/api
@@ -152,12 +166,19 @@ fastapi dev src/aross_stations_db/api
 ```
 
 <details>
-<summary>Example query</summary>
+<summary>Example HTTP query</summary>
 
 ```
-http://127.0.0.1:8000/v1/?start=2023-01-01&end=2023-06-01&polygon=POLYGON%20((-159.32130625160698%2069.56469019745796,%20-159.32130625160698%2068.08208920517862,%20-150.17196253090276%2068.08208920517862,%20-150.17196253090276%2069.56469019745796,%20-159.32130625160698%2069.56469019745796))
+http://localhost:8000/v1/?start=2023-01-01&end=2023-06-01&polygon=POLYGON%20((-159.32130625160698%2069.56469019745796,%20-159.32130625160698%2068.08208920517862,%20-150.17196253090276%2068.08208920517862,%20-150.17196253090276%2069.56469019745796,%20-159.32130625160698%2069.56469019745796))
 ```
 </details>
+
+
+### Shutdown
+
+```bash
+docker compose down
+```
 
 
 ## Troubleshooting
