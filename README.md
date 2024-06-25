@@ -137,6 +137,19 @@ where
 ```
 
 
+### Run API
+
+```bash
+fastapi dev src/aross_stations_db/api
+```
+
+Example query:
+
+```
+http://127.0.0.1:8000/v1/?start=2023-01-01&end=2023-06-01&polygon=POLYGON%20((-159.32130625160698%2069.56469019745796,%20-159.32130625160698%2068.08208920517862,%20-150.17196253090276%2068.08208920517862,%20-150.17196253090276%2069.56469019745796,%20-159.32130625160698%2069.56469019745796))
+```
+
+
 <!-- prettier-ignore-start -->
 [actions-badge]:            https://github.com/nsidc/aross-stations-db/workflows/CI/badge.svg
 [actions-link]:             https://github.com/nsidc/aross-stations-db/actions

@@ -37,8 +37,8 @@ def load_events(events: Iterator[dict[str, str]], *, session: Session) -> None:
         [
             Event(
                 station_id=event["station_id"],
-                start_timestamp=dt.datetime.fromisoformat(event["start"]),
-                end_timestamp=dt.datetime.fromisoformat(event["end"]),
+                time_start=dt.datetime.fromisoformat(event["start"]),
+                time_end=dt.datetime.fromisoformat(event["end"]),
             )
             for event in events
         ]

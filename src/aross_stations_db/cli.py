@@ -1,5 +1,6 @@
 import click
 from loguru import logger
+from sqlalchemy.orm import Session
 
 from aross_stations_db.config import Settings
 from aross_stations_db.db import (
@@ -12,10 +13,6 @@ from aross_stations_db.source_data import (
     get_stations,
 )
 
-# TODO: False-positive. Remove type-ignore.
-#       See: https://github.com/pydantic/pydantic/issues/6713
-config = Settings()  # type:ignore[call-arg]
-
 
 @click.group()
 def cli() -> None:
@@ -25,7 +22,12 @@ def cli() -> None:
 @cli.command
 def init() -> None:
     """Create the database tables."""
-    create_tables(config.db_session)
+    # TODO: False-positive. Remove type-ignore.
+    #       See: https://github.com/pydantic/pydantic/issues/6713
+    config = Settings()  # type:ignore[call-arg]
+
+    with Session(config.db_engine) as db_session:
+        create_tables(db_session)
 
     logger.success("Tables created")
 
@@ -33,10 +35,15 @@ def init() -> None:
 @cli.command
 def load() -> None:
     """Load the database tables from files on disk."""
+    # TODO: False-positive. Remove type-ignore.
+    #       See: https://github.com/pydantic/pydantic/issues/6713
+    config = Settings()  # type:ignore[call-arg]
+
     stations = get_stations(config.stations_metadata_filepath)
     events = get_events(config.events_dir)
 
-    load_stations(stations, session=config.db_session)
-    load_events(events, session=config.db_session)
+    with Session(config.db_engine) as db_session:
+        load_stations(stations, session=db_session)
+        load_events(events, session=db_session)
 
     logger.success("Data loaded")

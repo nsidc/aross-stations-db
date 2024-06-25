@@ -7,6 +7,7 @@ from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
     mapped_column,
+    relationship,
 )
 
 
@@ -29,16 +30,15 @@ class Station(Base):
         index=True,
     )
 
+    events = relationship("Event", backref="station")
+
 
 class Event(Base):
     __tablename__ = "event"
 
-    # TODO: Is this a good PK or should it be station_id + start?
-    id: Mapped[int] = mapped_column(primary_key=True)
-
-    station_id: Mapped[str] = mapped_column(ForeignKey("station.id"), index=True)
-    start_timestamp: Mapped[dt.datetime] = mapped_column(index=True)
-    end_timestamp: Mapped[dt.datetime] = mapped_column(index=True)
+    station_id: Mapped[str] = mapped_column(ForeignKey("station.id"), primary_key=True)
+    time_start: Mapped[dt.datetime] = mapped_column(primary_key=True)
+    time_end: Mapped[dt.datetime] = mapped_column(primary_key=True)
 
     # TODO: More fields: duration,RA,UP,FZRA,SOLID,t2m_mean,t2m_min,t2m_max,sog
     #       Don't think we need to keep duration.
