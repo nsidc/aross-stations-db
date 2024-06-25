@@ -117,7 +117,8 @@ adminer container for quick inspection. Navigate in your browser to
 * Database: `aross`
 
 
-#### Example query
+<details>
+<summary>Example query</summary>
 
 ```sql
 select event.*
@@ -135,6 +136,7 @@ where
   AND event.end_timestamp < '2023-06-01'::date
 ;
 ```
+</details>
 
 
 ### Run API
@@ -143,11 +145,13 @@ where
 fastapi dev src/aross_stations_db/api
 ```
 
-Example query:
+<details>
+<summary>Example query</summary>
 
 ```
 http://127.0.0.1:8000/v1/?start=2023-01-01&end=2023-06-01&polygon=POLYGON%20((-159.32130625160698%2069.56469019745796,%20-159.32130625160698%2068.08208920517862,%20-150.17196253090276%2068.08208920517862,%20-150.17196253090276%2069.56469019745796,%20-159.32130625160698%2069.56469019745796))
 ```
+</details>
 
 
 <!-- prettier-ignore-start -->
