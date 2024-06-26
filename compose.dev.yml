@@ -1,6 +1,7 @@
 services:
   api:
     image: "nsidc/aross-stations-db:dev"
+    command: ["dev", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
     build: "."
     volumes:
       - "${PWD}:/app"

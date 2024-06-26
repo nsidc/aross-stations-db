@@ -12,9 +12,11 @@ services:
     <<: *common
 
     entrypoint: "fastapi"
-    command: ["dev", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
+    command: ["run", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
     ports:
       - "8000:8000"
+    environment:
+      AROSS_DB_CONNSTR: null
 
 
   db:
@@ -51,6 +53,7 @@ services:
       - "${AROSS_DATA_BASEDIR}:/data"
     environment:
       AROSS_DATA_BASEDIR: "/data"
+      AROSS_DB_CONNSTR: null
     profiles:
       # Prevents this "service" from running with `docker compose up`.
       # Instead, it's intended to be used like `docker compose run cli --help`.
