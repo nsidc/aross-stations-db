@@ -82,11 +82,13 @@ docker compose up --detach
 You can use the included Adminer container for quick inspection. Navigate in your
 browser to `http://localhost:80` and enter:
 
-* System: PostgreSQL
-* Server: `aross-stations-db`
-* Username: `aross`
-* Password: Whatever you specified in the environment variable
-* Database: `aross`
+| Field    | Value |
+| -------- | ----- |
+| System   | PostgreSQL |
+| Server   | `aross-stations-db` |
+| Username | `aross` |
+| Password | Whatever you specified in the environment variable |
+| Database | `aross` |
 
 > [!NOTE]
 > At this point, the database is empty. We're just verifying we can connect. Continue to
