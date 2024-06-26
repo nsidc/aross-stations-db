@@ -141,18 +141,6 @@ http://localhost:8000/v1/?start=2023-01-01&end=2023-06-01&polygon=POLYGON%20((-1
 </details>
 
 
-### Shutdown
-
-```bash
-docker compose down
-```
-
-
-### Start over
-
-Remove the `_db/` directory to start over with a fresh database.
-
-
 ### View logs
 
 In this example, we view and follow logs for the `api` service:
@@ -163,6 +151,30 @@ docker compose logs --follow api
 
 You can replace `api` with any other service name, or omit it to view logs for all
 services.
+
+
+### Shutdown
+
+```bash
+docker compose down
+```
+
+
+### Cleanup
+
+#### Database
+
+Remove the `_db/` directory to start over with a fresh database.
+
+
+#### Containers and images
+
+```bash
+# Bring down containers, even if a service name has changed
+docker compose down --remove-orphans
+# Clean up all unused images aggressively
+docker system prune -af
+```
 
 
 ## Troubleshooting
