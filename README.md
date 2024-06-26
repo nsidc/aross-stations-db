@@ -9,8 +9,8 @@
 
 [![GitHub Discussion][github-discussions-badge]][github-discussions-link]
 
-Reads ASOS station data from disk on the NSIDC archive to create a temporally and
-geospatially indexed database to quickly search events.
+Reads Automated Surface Observation Station (ASOS) data from disk on the NSIDC archive
+to create a temporally and geospatially indexed database to quickly search events.
 
 > [!NOTE]
 > TODO: Is this data available publicly and documented? How is it produced? Links!
@@ -18,58 +18,7 @@ geospatially indexed database to quickly search events.
 
 ## Install
 
-For now, you can install from this repository.
-
-> [!NOTE]
-> TODO: Publish to PyPI if we decide this package should continue to exist and not be
-> moved or renamed :)
-
-> [!NOTE]
-> TODO: Dockerize the package
-
-```bash
-pip install git+https://github.com/nsidc/aross-stations-db.git
-```
-
-> [!WARNING]
-> When installed this way, `.env`
-
-
-### Dev install
-
-> [!NOTE]
-> Don't worry about this unless you intend to change the code!
-
-> [!NOTE]
-> TODO: Extract dev stuff to separate doc? OR make a collapsible dev quickstart in the
-> README?
-
-With this method, you can change the source code and the changes will be reflected
-without needing to re-install.
-
-```bash
-pip install --editable ".[dev]"
-```
-
-
-#### Checks
-
-If installed correctly, you can now lint & format the code, which is run through
-`pre-commit` because these tasks don't require installing the package:
-
-```bash
-pre-commit run --all-files
-```
-
-You can also type-check and test the code, which are run through `nox` because this
-_does_ require installing the package:
-
-```bash
-nox
-```
-
-> [!TIP]
-> To reuse an already-created Nox env, add `-R`.
+To get started quickly, [install Docker](https://docs.docker.com/engine/install/).
 
 
 ## Usage
@@ -77,24 +26,53 @@ nox
 Everything presumes the current working directory is the root of this repo unless
 otherwise stated.
 
+<details><summary>Dev quickstart</summary>
+
+> :bangbang: Don't worry about this unless you intend to change the code!
+
+**View
+[our contributing docs](https://aross-stations-db.readthedocs.io/en/latest/contributing.html)
+for more details!**
+
+Use the pre-configured dev compose configuration:
+
+```bash
+ln -s compose.dev.yml compose.override.dev.yml
+```
+
+</details>
+
 
 ### Set envvars
 
 Create a `.env` file or otherwise `export` the envvars. Your `.env` file might look like this
 if you're running a local database:
 
+> [!IMPORTANT]
+> `$AROSS_DATA_BASEDIR` should be Andy's data directory containing expected "metadata"
+> and "events" subdirectories. TODO: Document how that data is created! _How can the
+> public access it?_
+
+> [!NOTE]
+> The connection string shown here is for connecting within the Docker network to a
+> container with the hostname `db`.
+
 ```bash
 POSTGRES_PASSWORD="supersecret"
-AROSS_DB_CONNSTR="postgresql+psycopg://aross:${POSTGRES_PASSWORD}@localhost:5432/aross"
-# NOTE: This dir should contain "metadata" and "events" subdirectories:
+AROSS_DB_CONNSTR="postgresql+psycopg://aross:${POSTGRES_PASSWORD}@db:5432/aross"
 AROSS_DATA_BASEDIR="/path/to/aross-data-dir"
 ```
 
 
-### Start a fresh database
+### Start the application stack
 
-This repo provides a quickstart database in Docker, defined in `compose.yml`. Once
-started, you (and our code!) can connect on port `5432`.
+The stack is configured within `compose.yml` and includes containers:
+
+* `aross-stations-db`: A [PostGIS](https://postgis.net/) database for quickly storing
+  and accessing event records.
+* `aross-stations-admin`: An [Adminer](https://www.adminer.org/) container for
+  inspecting the database in the browser.
+* `aross-stations-api`: An HTTP API for accessing data in the database.
 
 ```bash
 docker compose up --detach
@@ -103,8 +81,8 @@ docker compose up --detach
 
 ### Inspect the database
 
-You can use the included [Adminer](https://www.adminer.org/) container for quick
-inspection. Navigate in your browser to `http://localhost:80` and enter:
+You can use the included Adminer container for quick inspection. Navigate in your
+browser to `http://localhost:80` and enter:
 
 * System: PostgreSQL
 * Server: `aross-stations-db`
@@ -120,11 +98,14 @@ inspection. Navigate in your browser to `http://localhost:80` and enter:
 ### Run ingest
 
 ```bash
-aross-stations-db init  # Create empty tables (deleting any pre-existing ones)
-aross-stations-db load  # Load the tables from event files
+docker compose run ingest init  # Create empty tables (deleting any pre-existing ones)
+docker compose run ingest load  # Load the tables from event files
 ```
 
 From a fast disk, this should take under 2 minutes.
+
+
+### :sparkles: Check out the data!
 
 Now, you can use Adminer's SQL Query menu to select some data:
 
@@ -149,21 +130,8 @@ where
 ```
 </details>
 
-
-### Run API
-
-> [!NOTE]
-> TODO: Dockerize this component
-
-```bash
-fastapi run src/aross_stations_db/api
-```
-
-Or, to get hot reloading for development:
-
-```bash
-fastapi dev src/aross_stations_db/api
-```
+Or you can check out the API docs in your browser at `http://localhost:8000/docs` or
+submit an HTTP query:
 
 <details>
 <summary>Example HTTP query</summary>
@@ -179,6 +147,23 @@ http://localhost:8000/v1/?start=2023-01-01&end=2023-06-01&polygon=POLYGON%20((-1
 ```bash
 docker compose down
 ```
+
+
+### Start over
+
+Remove the `_db/` directory to start over with a fresh database.
+
+
+### View logs
+
+In this example, we view and follow logs for the `api` service:
+
+```bash
+docker compose logs --follow api
+```
+
+You can replace `api` with any other service name, or omit it to view logs for all
+services.
 
 
 ## Troubleshooting
