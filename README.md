@@ -45,8 +45,13 @@ ln -s compose.dev.yml compose.override.dev.yml
 
 ### Set envvars
 
-Create a `.env` file or otherwise `export` the envvars. Your `.env` file might look like this
-if you're running a local database:
+Create a `.env` file or otherwise `export` the envvars. Your `.env` file might look like this:
+
+```bash
+POSTGRES_PASSWORD="supersecret"
+AROSS_DB_CONNSTR="postgresql+psycopg://aross:${POSTGRES_PASSWORD}@db:5432/aross"
+AROSS_DATA_BASEDIR="/path/to/aross-data-dir"
+```
 
 > [!IMPORTANT]
 > `$AROSS_DATA_BASEDIR` should be Andy's data directory containing expected "metadata"
@@ -56,12 +61,6 @@ if you're running a local database:
 > [!NOTE]
 > The connection string shown here is for connecting within the Docker network to a
 > container with the hostname `db`.
-
-```bash
-POSTGRES_PASSWORD="supersecret"
-AROSS_DB_CONNSTR="postgresql+psycopg://aross:${POSTGRES_PASSWORD}@db:5432/aross"
-AROSS_DATA_BASEDIR="/path/to/aross-data-dir"
-```
 
 
 ### Start the application stack
