@@ -43,7 +43,8 @@ ln -s compose.dev.yml compose.override.dev.yml
 
 ### Set envvars
 
-Create a `.env` file or otherwise `export` the envvars. Your `.env` file might look like this:
+Create a `.env` file or otherwise `export` the required envvars. If you use an `.env`
+file, it should look like this (feel free to change the password :smile:):
 
 ```bash
 POSTGRES_PASSWORD="supersecret"
