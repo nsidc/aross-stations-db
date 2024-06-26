@@ -1,4 +1,4 @@
-name: Publish artifacts
+name: Build & publish artifacts
 
 on:
   workflow_dispatch:
