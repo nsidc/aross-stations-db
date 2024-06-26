@@ -2,7 +2,7 @@ import click
 from loguru import logger
 from sqlalchemy.orm import Session
 
-from aross_stations_db.config import Settings
+from aross_stations_db.config import CliLoadSettings, Settings
 from aross_stations_db.db import (
     create_tables,
     load_events,
@@ -37,7 +37,7 @@ def load() -> None:
     """Load the database tables from files on disk."""
     # TODO: False-positive. Remove type-ignore.
     #       See: https://github.com/pydantic/pydantic/issues/6713
-    config = Settings()  # type:ignore[call-arg]
+    config = CliLoadSettings()  # type:ignore[call-arg]
 
     stations = get_stations(config.stations_metadata_filepath)
     events = get_events(config.events_dir)

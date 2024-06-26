@@ -1,6 +1,7 @@
 # Specific to this project:
 ## Local db data volume mount for development:
 _data/
+compose.override.yml
 
 
 # Byte-compiled / optimized / DLL files
