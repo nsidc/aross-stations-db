@@ -16,25 +16,23 @@ to create a temporally and geospatially indexed database to quickly search event
 > TODO: Is this data available publicly and documented? How is it produced? Links!
 
 
-## Install
+## Usage
 
 To get started quickly, [install Docker](https://docs.docker.com/engine/install/).
 
-
-## Usage
-
-Everything presumes the current working directory is the root of this repo unless
-otherwise stated.
+> [!IMPORTANT]
+> Instructions that follow presume the current working directory is the root of this
+> repository unless otherwise stated.
 
 <details><summary>Dev quickstart</summary>
 
 > :bangbang: Don't worry about this unless you intend to change the code!
 
 **View
-[our contributing docs](https://aross-stations-db.readthedocs.io/en/latest/contributing.html)
+[the contributing docs](https://aross-stations-db.readthedocs.io/en/latest/contributing.html)
 for more details!**
 
-Use the pre-configured dev compose configuration:
+Set up the development compose configuration to be automatically loaded:
 
 ```bash
 ln -s compose.dev.yml compose.override.dev.yml
