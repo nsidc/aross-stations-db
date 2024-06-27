@@ -54,6 +54,10 @@ docs = [
   "sphinx_autodoc_typehints",
   "furo>=2023.08.17",
 ]
+ui = [
+  "jupyterlab",
+  "leafmap",
+]
 
 [project.urls]
 Homepage = "https://github.com/nsidc/aross-stations-db"

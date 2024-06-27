@@ -4,11 +4,28 @@ x-common: &common
       max-size: "20m"
       max-file: "5"
 
+# TODO: Use a tag!
+x-image: &image "nsidc/aross-stations-db"
+
 services:
+  ui:
+    container_name: "aross-stations-jupyterlab"
+    depends_on: ["api"]
+    image: *image
+    <<: *common
+
+    entrypoint: "jupyter"
+    command: ["lab", "--allow-root", "--ip=0.0.0.0"]
+    ports:
+      - "8888:8888"
+    environment:
+      JUPYTER_TOKEN: "${POSTGRES_PASSWORD}"
+
+
   api:
     container_name: "aross-stations-api"
     depends_on: ["db"]
-    image: "nsidc/aross-stations-db"  # TODO: Real tag!
+    image: *image
     <<: *common
 
     entrypoint: "fastapi"
@@ -46,7 +63,7 @@ services:
   cli:
     container_name: "aross-stations-cli"
     depends_on: ["db"]
-    image: "nsidc/aross-stations-db"  # TODO: Real tag!
+    image: *image
     <<: *common
 
     volumes:

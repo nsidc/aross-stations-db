@@ -1,13 +1,18 @@
+
+x-dev-common: &dev-common
+  image: "nsidc/aross-stations-db:dev"
+  build: "."
+  volumes:
+    - "${PWD}:/app"
+
+
 services:
+  ui:
+    <<: *dev-common
+
   api:
-    image: "nsidc/aross-stations-db:dev"
+    <<: *dev-common
     command: ["dev", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
-    build: "."
-    volumes:
-      - "${PWD}:/app"
 
   cli:
-    image: "nsidc/aross-stations-db:dev"
-    build: "."  # TODO: Dev compose
-    volumes:
-      - "${PWD}:/app"
+    <<: *dev-common

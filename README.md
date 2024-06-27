@@ -154,6 +154,14 @@ You can replace `api` with any other service name, or omit it to view logs for a
 services.
 
 
+## View UI
+
+For now, it's just a Jupyterlab instance with a demo notebook. In your browser, navigate
+to `http://localhost:8888`. The password is the same as the database password you set earlier.
+
+This UI will likely be replaced with something more robust. Who knows ;)
+
+
 ### Shutdown
 
 ```bash
@@ -161,14 +169,14 @@ docker compose down
 ```
 
 
-### Cleanup
+#### Cleanup
 
-#### Database
+##### Database
 
 Remove the `_db/` directory to start over with a fresh database.
 
 
-#### Containers and images
+##### Containers and images
 
 ```bash
 # Bring down containers, even if a service name has changed
