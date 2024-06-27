@@ -28,6 +28,7 @@ dependencies = [
   "pydantic-settings",
   "sqlalchemy ~=2.0",
   "geoalchemy2",
+  "geojson-pydantic ~=1.0",
   "psycopg[binary,pool]",
   "click ~=8.0",
 ]
