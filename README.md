@@ -38,6 +38,27 @@ Set up the development compose configuration to be automatically loaded:
 ln -s compose.dev.yml compose.override.dev.yml
 ```
 
+### Debugging
+
+You may wish to run the API process from an attached shell. You can set up the relevant
+container to "sleep" in `compose.dev.yml`:
+
+```yaml
+  api:
+    <<: *dev-common
+    entrypoint: "sleep"
+    command: ["9999999"]
+    # command: ["dev", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
+```
+
+Then `docker exec -it api sh` to connect to the container, and manually run the dev server:
+
+```
+fastapi dev --host 0.0.0.0 ./src/aross_stations_db/api`.
+```
+
+From here, you can interactively pause at any `breakpoint()` calls in the Python code.
+
 </details>
 
 
