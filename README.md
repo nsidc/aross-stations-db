@@ -67,11 +67,10 @@ You can set up the relevant container to "sleep" in `compose.dev.yml`:
     # command: ["dev", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
 ```
 
-Then `docker exec -it api sh` to connect to the container, and manually run the dev
-server:
+Then you can manually run the dev server interactively:
 
-```
-fastapi dev --host 0.0.0.0 ./src/aross_stations_db/api
+```bash
+docker compose exec api fastapi dev --host 0.0.0.0 ./src/aross_stations_db/api
 ```
 
 From here, you can interactively pause at any `breakpoint()` calls in the Python code.
