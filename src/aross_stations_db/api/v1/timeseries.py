@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 @router.get("/monthly")
-def get_monthly(
+def get_monthly_timeseries(
     db: Annotated[Session, Depends(get_db_session)],
     *,
     start: Annotated[dt.datetime, Query(description="ISO-format timestamp")],
