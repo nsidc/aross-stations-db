@@ -1,9 +1,12 @@
+import datetime as dt
+
 from geojson_pydantic import (
     Feature,
     FeatureCollection,
     Point,
 )
 from geojson_pydantic.types import Position2D
+from pydantic import BaseModel
 
 from aross_stations_db.tables import Station
 
@@ -30,3 +33,14 @@ def stations_query_results_to_geojson(
             for station, lon, lat, event_count in results
         ],
     )
+
+
+class TimeseriesJsonElement(BaseModel):
+    date: dt.date
+    event_count: int
+
+
+def timeseries_query_results_to_json(
+    results: list[tuple[dt.date, int]],
+) -> list[TimeseriesJsonElement]:
+    return [{"date": date, "event_count": event_count} for date, event_count in results]
