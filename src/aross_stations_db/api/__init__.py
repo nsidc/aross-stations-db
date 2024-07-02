@@ -8,4 +8,11 @@ api = FastAPI(
         " Automated Surface Observing System (ASOS) stations"
     ),
 )
-api.include_router(v1_router)
+api.include_router(v1_router, prefix="/v1", tags=["v1"])
+
+
+@api.get("/")
+def get():
+    return {
+        "Hello": "The root of this API doesn't do anything. Please check out '/docs'!"
+    }
