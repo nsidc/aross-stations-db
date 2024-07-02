@@ -38,10 +38,26 @@ Set up the development compose configuration to be automatically loaded:
 ln -s compose.dev.yml compose.override.dev.yml
 ```
 
+
+### Before starting the containers: dev environment setup
+
+You will need local tooling like Nox and pre-commit to do development. Use whatever
+Python version management tool you prefer (Conda, VirtualEnv, PyEnv, ...) to create a
+virtual environment, then install this package and its dev dependencies:
+
+```bash
+pip install --editable ".[dev]"
+```
+
+> [!IMPORTANT]
+> Do this step before starting the stack in dev mode, or you may encounter an error (in
+> which case, see the troubleshooting section for explanation!).
+
+
 ### Debugging
 
-You may wish to run the API process from an attached shell. You can set up the relevant
-container to "sleep" in `compose.dev.yml`:
+You may wish to run the API process from an attached shell for interactive debugging.
+You can set up the relevant container to "sleep" in `compose.dev.yml`:
 
 ```yaml
   api:
@@ -51,10 +67,11 @@ container to "sleep" in `compose.dev.yml`:
     # command: ["dev", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
 ```
 
-Then `docker exec -it api sh` to connect to the container, and manually run the dev server:
+Then `docker exec -it api sh` to connect to the container, and manually run the dev
+server:
 
 ```
-fastapi dev --host 0.0.0.0 ./src/aross_stations_db/api`.
+fastapi dev --host 0.0.0.0 ./src/aross_stations_db/api
 ```
 
 From here, you can interactively pause at any `breakpoint()` calls in the Python code.
@@ -209,7 +226,7 @@ docker system prune -af
 
 ## Troubleshooting
 
-### `Permission denied` errors from FastAPI
+### `Permission denied` errors on API startup
 
 When this error occurs, the webserver still responds to queries, but hot-reloading
 doesn't work.
@@ -223,6 +240,29 @@ automatically by Docker, so you may need to use `sudo`.
 ```bash
 sudo chmod -R ugo+r _data
 ```
+
+### API fails to start in dev with `No module named 'aross_stations_db._version'`
+
+Unfortunately, this project doesn't work perfectly with Docker for development yet. This
+is because our project configuration (`pyproject.toml`) is set up to dynamically
+generate version numbers from source control at build-time:
+
+```toml
+[tool.hatch]
+version.source = "vcs"
+build.hooks.vcs.version-file = "src/aross_stations_db/_version.py"
+```
+
+If you freshly clone this project and immediately start up the docker containers in dev
+mode, the dynamically-generated version module, `_version.py`, won't exist yet in the
+source directory (because it is git-ignored). The source directory will be mounted in to
+the docker container, overwriting the pre-built source directory in the image that
+_does_ (well, it _did_ until it was overwritten :wink:) include `_version.py`.
+
+It's very important to complete the initial setup step of creating a local environment
+and installing the package and it's development dependencies if you plan to be doing
+development. This will also give you Nox and pre-commit for automating development
+tasks.
 
 
 <!-- prettier-ignore-start -->
