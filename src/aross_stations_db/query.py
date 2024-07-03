@@ -1,9 +1,9 @@
 import datetime as dt
-from typing import cast
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import RowReturningQuery
+from sqlalchemy.types import DateTime, Float
 
 from aross_stations_db.tables import Event, Station
 
@@ -16,17 +16,11 @@ def stations_query(
     polygon: str | None = None,
 ) -> RowReturningQuery[tuple[Station, float, float, int]]:
     query = (
-        cast(
-            # TODO: A better way! Avoid duplicating information; the type of Station and
-            # func.count() can be inferred automatically, but not ST_X().
-            #       https://github.com/sqlalchemy/sqlalchemy/discussions/11564
-            RowReturningQuery[tuple[Station, float, float, int]],
-            db.query(
-                Station,
-                Station.location.ST_X(),
-                Station.location.ST_Y(),
-                func.count(),
-            ),
+        db.query(
+            Station,
+            func.ST_X(Station.location, type_=Float),
+            func.ST_Y(Station.location, type_=Float),
+            func.count(),
         )
         .join(
             Event,
@@ -51,15 +45,9 @@ def timeseries_query(
     end: dt.datetime,
     polygon: str | None = None,
 ) -> RowReturningQuery[tuple[dt.datetime, int]]:
-    query = cast(
-        # TODO: A better way! Avoid duplicating information; the type of func.count()
-        # can be inferred automatically, but not func.date_trunc().
-        #       https://github.com/sqlalchemy/sqlalchemy/discussions/11564
-        RowReturningQuery[tuple[dt.datetime, int]],
-        db.query(
-            func.date_trunc("month", Event.time_start).label("month"),
-            func.count(Event.time_start).label("count"),
-        ),
+    query = db.query(
+        func.date_trunc("month", Event.time_start, type_=DateTime).label("month"),
+        func.count(Event.time_start).label("count"),
     ).filter(Event.time_start >= start, Event.time_end < end)
 
     if polygon:
@@ -81,15 +69,9 @@ def climatology_query(
     end: dt.datetime,
     polygon: str | None = None,
 ) -> RowReturningQuery[tuple[int, int]]:
-    query = cast(
-        # TODO: A better way! Avoid duplicating information; the type of func.count()
-        # can be inferred automatically, but not func.date_trunc().
-        #       https://github.com/sqlalchemy/sqlalchemy/discussions/11564
-        RowReturningQuery[tuple[int, int]],
-        db.query(
-            func.extract("month", Event.time_start).label("month"),
-            func.count(Event.time_start).label("count"),
-        ),
+    query = db.query(
+        func.extract("month", Event.time_start).label("month"),
+        func.count(Event.time_start).label("count"),
     ).filter(Event.time_start >= start, Event.time_end < end)
 
     if polygon:
