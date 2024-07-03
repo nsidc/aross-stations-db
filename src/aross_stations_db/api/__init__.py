@@ -12,7 +12,7 @@ api.include_router(v1_router, prefix="/v1", tags=["v1"])
 
 
 @api.get("/")
-def get():
+def get() -> dict[str, str]:
     return {
         "Hello": "The root of this API doesn't do anything. Please check out '/docs'!"
     }
