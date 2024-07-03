@@ -113,6 +113,18 @@ The stack is configured within `compose.yml` and includes containers:
 docker compose up --detach
 ```
 
+> [!IMPORTANT]
+> If you've pulled the images before, you may need to fetch new ones!
+>
+> ```python
+> docker compose down --remove-orphans
+> docker compose pull
+> docker compose up --detach
+> ```
+>
+> If you're using the "dev" compose file, skip the "pull" step -- if files have been
+> changed since last build, a new one will occur automatically at the "up" step.
+
 
 ### Inspect the database
 
