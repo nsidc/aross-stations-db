@@ -1,5 +1,7 @@
 import datetime as dt
+from typing import Annotated
 
+from annotated_types import Ge, Le
 from geojson_pydantic import (
     Feature,
     FeatureCollection,
@@ -47,4 +49,18 @@ def timeseries_query_results_to_json(
     return [
         TimeseriesJsonElement(date=date, event_count=event_count)
         for date, event_count in results
+    ]
+
+
+class ClimatologyJsonElement(BaseModel):
+    month: Annotated[int, Ge(1), Le(12)]
+    event_count: int
+
+
+def climatology_query_results_to_json(
+    results: list[Row[tuple[int, int]]],
+) -> list[ClimatologyJsonElement]:
+    return [
+        ClimatologyJsonElement(month=month, event_count=event_count)
+        for month, event_count in results
     ]
