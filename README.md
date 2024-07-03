@@ -110,20 +110,18 @@ The stack is configured within `compose.yml` and includes containers:
 * `aross-stations-api`: An HTTP API for accessing data in the database.
 
 ```bash
-docker compose up --detach
+docker compose up --pull=always --detach
 ```
 
 > [!IMPORTANT]
-> If you've pulled the images before, you may need to fetch new ones!
+> If you've pulled the images before, you may need to fetch new ones! Bring down the
+> running containers:
 >
 > ```python
 > docker compose down --remove-orphans
-> docker compose pull
-> docker compose up --detach
 > ```
 >
-> If you're using the "dev" compose file, skip the "pull" step -- if files have been
-> changed since last build, a new one will occur automatically at the "up" step.
+> ...then run the "up" command again.
 
 
 ### Inspect the database
