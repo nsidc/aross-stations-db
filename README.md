@@ -1,4 +1,4 @@
-# aross-stations-db
+# Arctic Rain on Snow Study (AROSS) Stations Database
 
 [![Actions Status][actions-badge]][actions-link]
 [![Documentation Status][rtd-badge]][rtd-link]
@@ -14,6 +14,8 @@ to create a temporally and geospatially indexed database to quickly search event
 
 > [!NOTE]
 > TODO: Is this data available publicly and documented? How is it produced? Links!
+
+_Part of the [AROSS Stations](https://github.com/nsidc/aross-stations) project._
 
 
 ## Usage
@@ -127,7 +129,7 @@ docker compose up --pull=always --detach
 ### Inspect the database
 
 You can use the included Adminer container for quick inspection. Navigate in your
-browser to `http://localhost:80` and enter:
+browser to `http://localhost:8080` and enter:
 
 | Field    | Value |
 | -------- | ----- |
