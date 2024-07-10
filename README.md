@@ -147,8 +147,8 @@ browser to `http://localhost:8080` and enter:
 ### Run ingest
 
 ```bash
-docker compose run ingest init  # Create empty tables (deleting any pre-existing ones)
-docker compose run ingest load  # Load the tables from event files
+docker compose run cli init  # Create empty tables (deleting any pre-existing ones)
+docker compose run cli load  # Load the tables from event files
 ```
 
 From a fast disk, this should take under 2 minutes.
