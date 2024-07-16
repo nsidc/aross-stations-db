@@ -5,11 +5,11 @@ from fastapi import APIRouter, Depends, Query
 from geoalchemy2 import WKTElement
 from sqlalchemy.orm import Session
 
+from aross_stations_db.api.dependencies import get_db_session
 from aross_stations_db.api.v1.output import (
     ClimatologyJsonElement,
     climatology_query_results_to_json,
 )
-from aross_stations_db.middleware import get_db_session
 from aross_stations_db.query import climatology_query
 
 router = APIRouter()
