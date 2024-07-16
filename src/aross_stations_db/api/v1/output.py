@@ -24,14 +24,26 @@ def stations_query_results_to_geojson(
         features=[
             Feature(
                 type="Feature",
-                properties={
-                    "name": station.name,
-                    "matching_event_count": event_count,
-                },
                 geometry=Point(
                     type="Point",
                     coordinates=Position2D(longitude=lon, latitude=lat),
                 ),
+                properties={
+                    "id": station.id,
+                    "name": station.name,
+                    "elevation_meters": station.elevation_meters,
+                    "record_begins": station.record_begins,
+                    "timezone_name": station.timezone_name,
+                    "country_code": station.country_code,
+                    "us_state_abbreviation": station.us_state_abbreviation,
+                    "us_county_name": station.us_county_name,
+                    "weather_forecast_office": station.weather_forecast_office,
+                    "ugc_county_code": station.ugc_county_code,
+                    "ugc_zone_code": station.ugc_zone_code,
+                    "iem_network": station.iem_network,
+                    "iem_climate_site": station.iem_climate_site,
+                    "matching_event_count": event_count,
+                },
             )
             for station, lon, lat, event_count in results
         ],
