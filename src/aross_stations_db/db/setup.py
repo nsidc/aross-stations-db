@@ -43,11 +43,21 @@ def load_stations(stations: list[dict[str, str]], *, session: Session) -> None:
             Station(
                 id=station["stid"],
                 name=station["station_name"],
-                country_code=station["country"],
                 # HACK: Passing a string for location is "wrong" here, but it's working.
                 # Something is being handled implicitly to convert the string to binary
                 # (WKB).
                 location=_station_location_wkt(station),  # type: ignore[arg-type]
+                elevation_meters=float(station["elevation"]),
+                record_begins=dt.datetime.fromisoformat(station["record_begins"]),
+                timezone_name=station["tzname"],
+                country_code=station["country"],
+                us_state_abbreviation=station["state"] or None,
+                us_county_name=station["county"] or None,
+                weather_forecast_office=station["wfo"] or None,
+                ugc_county_code=station["ugc_county"] or None,
+                ugc_zone_code=station["ugc_zone"] or None,
+                iem_network=station["iem_network"],
+                iem_climate_site=station["climate_site"] or None,
             )
             for station in stations
         ]

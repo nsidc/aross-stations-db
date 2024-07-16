@@ -21,7 +21,6 @@ class Station(Base):
 
     id: Mapped[str] = mapped_column(primary_key=True)
     name: Mapped[str]
-    country_code: Mapped[str]
 
     location: Mapped[WKBElement] = mapped_column(
         Geometry(
@@ -31,7 +30,31 @@ class Station(Base):
         index=True,
     )
 
+    elevation_meters: Mapped[float]
+    record_begins: Mapped[dt.datetime]
+
+    timezone_name: Mapped[str]
+    country_code: Mapped[str]
+    us_state_abbreviation: Mapped[str | None]
+    us_county_name: Mapped[str | None]
+
+    weather_forecast_office: Mapped[str | None]
+
+    # UGC = Universal Geographic Code
+    # (https://www.weather.gov/media/directives/010_pdfs_archived/pd01017002b.pdf)
+    ugc_county_code: Mapped[str | None]
+    ugc_zone_code: Mapped[str | None]
+
+    # IEM = Iowa Environmental Mesonet. See:
+    #   https://mesonet.agron.iastate.edu/ASOS/
+    #   https://mesonet.agron.iastate.edu/sites/locate.php?network=AKCLIMATE
+    iem_network: Mapped[str]
+    iem_climate_site: Mapped[str | None]
+
     events = relationship("Event", backref="station")
+
+    # TODO: More fields:
+    #  ncdc81,ncei91,network,start_year,end_year
 
 
 class Event(Base):
