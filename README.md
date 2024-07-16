@@ -77,6 +77,14 @@ docker compose exec api fastapi dev --host 0.0.0.0 ./src/aross_stations_db/api
 
 From here, you can interactively pause at any `breakpoint()` calls in the Python code.
 
+
+### UI development
+
+The instructions below specify starting the stack with the `--profile ui` option. If you
+wish to develop in
+[the user interface code repository](https://github.com/nsidc/aross-stations-ui), you
+should omit that flag and follow the instructions in the UI repo to develop.
+
 </details>
 
 
@@ -112,7 +120,7 @@ The stack is configured within `compose.yml` and includes containers:
 * `aross-stations-api`: An HTTP API for accessing data in the database.
 
 ```bash
-docker compose up --pull=always --detach
+docker compose --profile ui up --pull=always --detach
 ```
 
 > [!IMPORTANT]
@@ -203,13 +211,19 @@ You can replace `api` with any other service name, or omit it to view logs for a
 services.
 
 
-## View UI
+### View UI
 
-For now, it's just a Jupyterlab instance with a demo notebook. In your browser, navigate
-to `http://localhost:8888`. The password is the same as the database password you set earlier.
+Navigate to `http://localhost:80`.
 
-This UI will likely be replaced with something more robust. Who knows ;)
 
+### Experiment in JupyterLab
+
+This repository provides a demo notebook to experiment with the API. In your browser,
+navigate to `http://localhost:8888`. The password is the same as the database password
+you set earlier.
+
+
+## Cleanup
 
 ### Shutdown
 

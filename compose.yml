@@ -9,17 +9,12 @@ x-image: &image "nsidc/aross-stations-db"
 
 services:
   ui:
-    container_name: "aross-stations-jupyterlab"
+    container_name: "aross-stations-ui"
     depends_on: ["api"]
-    image: *image
-    <<: *common
-
-    entrypoint: "jupyter"
-    command: ["lab", "--allow-root", "--ip=0.0.0.0"]
+    image: "nsidc/aross-stations-ui:latest"
     ports:
-      - "8888:8888"
-    environment:
-      JUPYTER_TOKEN: "${POSTGRES_PASSWORD}"
+      - "80:80"
+    profiles: ["ui"]
 
 
   api:
@@ -71,7 +66,20 @@ services:
     environment:
       AROSS_DATA_BASEDIR: "/data"
       AROSS_DB_CONNSTR: null
-    profiles:
-      # Prevents this "service" from running with `docker compose up`.
-      # Instead, it's intended to be used like `docker compose run cli --help`.
-      - "_"
+    # Prevents this "service" from running with `docker compose up`.
+    # Instead, it's intended to be used like `docker compose run cli --help`.
+    profiles: ["_"]
+
+
+  jupyterlab:
+    container_name: "aross-stations-jupyterlab"
+    depends_on: ["api"]
+    image: *image
+    <<: *common
+
+    entrypoint: "jupyter"
+    command: ["lab", "--allow-root", "--ip=0.0.0.0"]
+    ports:
+      - "8888:8888"
+    environment:
+      JUPYTER_TOKEN: "${POSTGRES_PASSWORD}"
