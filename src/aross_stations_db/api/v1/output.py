@@ -11,7 +11,7 @@ from geojson_pydantic.types import Position2D
 from pydantic import BaseModel
 from sqlalchemy import Row
 
-from aross_stations_db.tables import Station
+from aross_stations_db.db.tables import Station
 
 StationsGeoJson = FeatureCollection[Feature[Point, dict[str, object]]]
 

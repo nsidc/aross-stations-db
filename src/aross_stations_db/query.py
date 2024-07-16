@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import RowReturningQuery
 from sqlalchemy.types import DateTime, Float
 
-from aross_stations_db.tables import Event, Station
+from aross_stations_db.db.tables import Event, Station
 
 
 def stations_query(

@@ -3,7 +3,7 @@ from collections.abc import Iterator
 
 from sqlalchemy.orm import Session
 
-from aross_stations_db.tables import Base, Event, Station
+from aross_stations_db.db.tables import Base, Event, Station
 
 
 def create_tables(session: Session) -> None:
