@@ -15,14 +15,14 @@ nox.options.default_venv_backend = "uv|virtualenv"
 
 @nox.session
 def typecheck(session: nox.Session) -> None:
-    session.install(".[test]")
+    session.install("--editable", ".[test]")
     session.run("mypy")
 
 
 @nox.session
 def test(session: nox.Session) -> None:
     """Run the unit and regular tests."""
-    session.install(".[test]")
+    session.install("--editable", ".[test]")
     session.run("pytest", *session.posargs)
 
 
@@ -45,7 +45,7 @@ def build_docs(session: nox.Session) -> None:
 
     extra_installs = ["sphinx-autobuild"] if args.serve else []
 
-    session.install("-e.[docs]", *extra_installs)
+    session.install("--editable", ".[docs]", *extra_installs)
     session.chdir("docs")
 
     if args.builder == "linkcheck":
