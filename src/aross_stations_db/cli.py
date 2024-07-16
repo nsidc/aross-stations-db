@@ -3,10 +3,10 @@ from loguru import logger
 from sqlalchemy.orm import Session
 
 from aross_stations_db.config import CliLoadSettings, Settings
-from aross_stations_db.db import (
-    create_tables,
+from aross_stations_db.db.setup import (
     load_events,
     load_stations,
+    recreate_tables,
 )
 from aross_stations_db.source_data import (
     get_events,
@@ -21,15 +21,15 @@ def cli() -> None:
 
 @cli.command
 def init() -> None:
-    """Create the database tables."""
+    """Create the database tables, dropping any that pre-exist."""
     # TODO: False-positive. Remove type-ignore.
     #       See: https://github.com/pydantic/pydantic/issues/6713
     config = Settings()  # type:ignore[call-arg]
 
     with Session(config.db_engine) as db_session:
-        create_tables(db_session)
+        recreate_tables(db_session)
 
-    logger.success("Tables created")
+    logger.success("Database initialized")
 
 
 @cli.command
