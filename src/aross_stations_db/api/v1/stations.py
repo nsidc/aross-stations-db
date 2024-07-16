@@ -10,7 +10,7 @@ from aross_stations_db.api.v1.output import (
     StationsGeoJson,
     stations_query_results_to_geojson,
 )
-from aross_stations_db.query import stations_query
+from aross_stations_db.db.query import stations_query
 
 router = APIRouter()
 

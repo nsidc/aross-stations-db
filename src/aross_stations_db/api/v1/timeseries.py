@@ -10,7 +10,7 @@ from aross_stations_db.api.v1.output import (
     TimeseriesJsonElement,
     timeseries_query_results_to_json,
 )
-from aross_stations_db.query import timeseries_query
+from aross_stations_db.db.query import timeseries_query
 
 router = APIRouter()
 
