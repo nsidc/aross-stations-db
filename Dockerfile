@@ -7,6 +7,6 @@ RUN apk add git build-base musl-dev linux-headers
 WORKDIR /app
 ADD . .
 
-RUN pip install --editable ".[dev,test,docs,ui]"
+RUN pip install --editable ".[ui]"
 
 ENTRYPOINT ["aross-stations-db"]
