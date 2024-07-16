@@ -285,7 +285,7 @@ the docker container, overwriting the pre-built source directory in the image th
 _does_ (well, it _did_ until it was overwritten :wink:) include `_version.py`.
 
 It's very important to complete the initial setup step of creating a local environment
-and installing the package and it's development dependencies if you plan to be doing
+and installing the package and its development dependencies if you plan to be doing
 development. This will also give you Nox and pre-commit for automating development
 tasks.
 
