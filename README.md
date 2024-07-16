@@ -169,6 +169,9 @@ Now, you can use Adminer's SQL Query menu to select some data:
 <details>
 <summary>Example SQL query</summary>
 
+This query returns 13 results at the time of this writing, but it may return more at a
+future time.
+
 ```sql
 select event.*
 from event
@@ -183,6 +186,8 @@ where
   )
   AND event.time_start > '2023-01-01'::date
   AND event.time_end < '2023-06-01'::date
+  AND event.snow_on_ground
+  AND event.rain_hours >= 1
 ;
 ```
 </details>
@@ -236,7 +241,9 @@ docker compose down
 
 ##### Database
 
-Remove the `_db/` directory to start over with a fresh database.
+There is no need to remove the `_data/` directory to start over with a fresh database; the
+`init` CLI command will do that for you! However, if you want to completely remove the
+database to save space on your system, you may want to delete the `_data/` directory.
 
 
 ##### Containers and images

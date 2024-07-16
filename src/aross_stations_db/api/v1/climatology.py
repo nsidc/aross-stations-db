@@ -10,7 +10,7 @@ from aross_stations_db.api.v1.output import (
     ClimatologyJsonElement,
     climatology_query_results_to_json,
 )
-from aross_stations_db.query import climatology_query
+from aross_stations_db.db.query import climatology_query
 
 router = APIRouter()
 
