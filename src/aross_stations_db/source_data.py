@@ -4,7 +4,6 @@ from collections.abc import Iterator
 from pathlib import Path
 
 from loguru import logger
-from tqdm import tqdm
 
 
 def get_stations(metadata_fp: Path) -> list[dict[str, str]]:
@@ -23,7 +22,7 @@ def get_event_files(events_dir: Path) -> list[Path]:
 
 
 def get_events(events_dir: Path) -> Iterator[dict[str, str]]:
-    for event_fp in tqdm(get_event_files(events_dir)):
+    for event_fp in get_event_files(events_dir):
         station_id = event_fp.stem.split(".")[0]
 
         with event_fp.open() as event_file:

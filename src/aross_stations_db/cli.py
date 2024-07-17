@@ -1,9 +1,11 @@
 import click
 from loguru import logger
 from sqlalchemy.orm import Session
+from tqdm import tqdm
 
 from aross_stations_db.config import CliLoadSettings, Settings
 from aross_stations_db.db.setup import (
+    generate_event_objects,
     load_events,
     load_stations,
     recreate_tables,
@@ -39,11 +41,22 @@ def load() -> None:
     #       See: https://github.com/pydantic/pydantic/issues/6713
     config = CliLoadSettings()  # type:ignore[call-arg]
 
-    stations = get_stations(config.stations_metadata_filepath)
-    events = get_events(config.events_dir)
+    raw_stations = get_stations(config.stations_metadata_filepath)
+    raw_events = get_events(config.events_dir)
 
     with Session(config.db_engine) as db_session:
-        load_stations(stations, session=db_session)
-        load_events(events, session=db_session)
+        load_stations(raw_stations, session=db_session)
+        logger.info("Loaded stations")
 
-    logger.success("Data loaded")
+        # The event processing steps are split into stages to provide better feadback at
+        # runtime. On slower systems, it can be unclear what the bottleneck is. In the
+        # long run, we should try to optimize this after learning more.
+        events = generate_event_objects(
+            tqdm(raw_events, desc="Reading events"),
+        )
+
+        logger.info("Loading events; this can take a minute or so")
+        load_events(events, session=db_session)
+        logger.info("Loaded events")
+
+    logger.success("Database load complete")
