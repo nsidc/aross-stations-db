@@ -90,13 +90,11 @@ should omit that flag and follow the instructions in the UI repo to develop.
 
 ### Set envvars
 
-Create a `.env` file or otherwise `export` the required envvars. If you use an `.env`
-file, it should look like this (feel free to change the password :smile:):
+Create a `.env` file or otherwise `export` the required envvars. You can use our sample
+environment file as a starting point, and modify as you see fit:
 
 ```bash
-POSTGRES_PASSWORD="supersecret"
-AROSS_DB_CONNSTR="postgresql+psycopg://aross:${POSTGRES_PASSWORD}@db:5432/aross"
-AROSS_DATA_BASEDIR="/path/to/aross-data-dir"
+cp .env.sample .env
 ```
 
 > [!IMPORTANT]
