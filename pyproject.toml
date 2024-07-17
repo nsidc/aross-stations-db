@@ -23,6 +23,7 @@ classifiers = [
 dynamic = ["version"]
 dependencies = [
   "loguru",
+  "tqdm",
   "fastapi ~=0.111.0",
   "pydantic ~=2.0",
   "pydantic-settings",
