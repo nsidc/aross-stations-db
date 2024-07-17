@@ -3,6 +3,7 @@ import datetime as dt
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import RowReturningQuery
+from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.types import DateTime, Float
 
 from aross_stations_db.db.tables import Event, Station
@@ -25,7 +26,7 @@ def stations_query(
         .join(
             Event,
         )
-        .filter(Event.time_start >= start, Event.time_end < end)
+        .filter(*_rain_on_snow_event_filter(start=start, end=end))
     )
 
     if polygon:
@@ -48,7 +49,7 @@ def timeseries_query(
     query = db.query(
         func.date_trunc("month", Event.time_start, type_=DateTime).label("month"),
         func.count(Event.time_start).label("count"),
-    ).filter(Event.time_start >= start, Event.time_end < end)
+    ).filter(*_rain_on_snow_event_filter(start=start, end=end))
 
     if polygon:
         query = query.join(
@@ -72,7 +73,7 @@ def climatology_query(
     query = db.query(
         func.extract("month", Event.time_start).label("month"),
         func.count(Event.time_start).label("count"),
-    ).filter(Event.time_start >= start, Event.time_end < end)
+    ).filter(*_rain_on_snow_event_filter(start=start, end=end))
 
     if polygon:
         query = query.join(
@@ -84,3 +85,19 @@ def climatology_query(
         )
 
     return query.group_by("month").order_by("month")
+
+
+def _rain_on_snow_event_filter(
+    *,
+    start: dt.datetime,
+    end: dt.datetime,
+) -> list[ColumnElement[bool]]:
+    """Return filter predicates for selecting rain on snow events within timeframe."""
+    return [
+        Event.time_start >= start,
+        Event.time_end < end,
+        # Snow today events occur when snow is on the ground and rain was detected in at
+        # least one hour.
+        Event.snow_on_ground == True,  # noqa: E712
+        Event.rain_hours >= 1,
+    ]

@@ -42,10 +42,10 @@ def stations_query_results_to_geojson(
                     "ugc_zone_code": station.ugc_zone_code,
                     "iem_network": station.iem_network,
                     "iem_climate_site": station.iem_climate_site,
-                    "matching_event_count": event_count,
+                    "matching_rain_on_snow_event_count": rain_on_snow_event_count,
                 },
             )
-            for station, lon, lat, event_count in results
+            for station, lon, lat, rain_on_snow_event_count in results
         ],
     )
 
