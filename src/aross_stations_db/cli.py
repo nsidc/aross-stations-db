@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 from aross_stations_db.config import CliLoadSettings
 from aross_stations_db.db.setup import (
-    generate_event_objects,
+    generate_event_object,
     load_events,
     load_stations,
     recreate_tables,
@@ -52,10 +52,11 @@ def init(skip_load: bool = False) -> None:
         # The event processing steps are split into stages to provide better feadback at
         # runtime. On slower systems, it can be unclear what the bottleneck is. In the
         # long run, we should try to optimize this after learning more.
-        events = generate_event_objects(
-            tqdm(raw_events, desc="Reading events"),
-        )
+        events = [
+            generate_event_object(e) for e in tqdm(raw_events, desc="Reading events")
+        ]
 
+        # TODO: Is there any way we can monitor this process with a progress bar?
         logger.info("Loading events; this can take a minute or so")
         load_events(events, session=db_session)
         logger.info("Loaded events")

@@ -1,5 +1,4 @@
 import datetime as dt
-from collections.abc import Iterator
 
 from sqlalchemy import MetaData, insert
 from sqlalchemy.orm import Session
@@ -65,20 +64,17 @@ def load_stations(stations: list[dict[str, str]], *, session: Session) -> None:
     session.commit()
 
 
-def generate_event_objects(raw_events: Iterator[dict[str, str]]) -> list[Event]:
-    return [
-        Event(
-            station_id=event["station_id"],
-            time_start=dt.datetime.fromisoformat(event["start"]),
-            time_end=dt.datetime.fromisoformat(event["end"]),
-            snow_on_ground=_snow_on_ground_status(event["sog"]),
-            rain_hours=int(event["RA"]),
-            freezing_rain_hours=int(event["FZRA"]),
-            solid_precipitation_hours=int(event["SOLID"]),
-            unknown_precipitation_hours=int(event["UP"]),
-        )
-        for event in raw_events
-    ]
+def generate_event_object(raw_event: dict[str, str]) -> Event:
+    return Event(
+        station_id=raw_event["station_id"],
+        time_start=dt.datetime.fromisoformat(raw_event["start"]),
+        time_end=dt.datetime.fromisoformat(raw_event["end"]),
+        snow_on_ground=_snow_on_ground_status(raw_event["sog"]),
+        rain_hours=int(raw_event["RA"]),
+        freezing_rain_hours=int(raw_event["FZRA"]),
+        solid_precipitation_hours=int(raw_event["SOLID"]),
+        unknown_precipitation_hours=int(raw_event["UP"]),
+    )
 
 
 def load_events(events: list[Event], *, session: Session) -> None:
