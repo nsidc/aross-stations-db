@@ -1,7 +1,6 @@
 import datetime as dt
-from collections.abc import Iterator
 
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, insert
 from sqlalchemy.orm import Session
 
 from aross_stations_db.db.tables import Base, Event, Station
@@ -65,22 +64,33 @@ def load_stations(stations: list[dict[str, str]], *, session: Session) -> None:
     session.commit()
 
 
-def load_events(events: Iterator[dict[str, str]], *, session: Session) -> None:
-    session.add_all(
-        [
-            Event(
-                station_id=event["station_id"],
-                time_start=dt.datetime.fromisoformat(event["start"]),
-                time_end=dt.datetime.fromisoformat(event["end"]),
-                snow_on_ground=_snow_on_ground_status(event["sog"]),
-                rain_hours=int(event["RA"]),
-                freezing_rain_hours=int(event["FZRA"]),
-                solid_precipitation_hours=int(event["SOLID"]),
-                unknown_precipitation_hours=int(event["UP"]),
-            )
-            for event in events
-        ]
+def generate_event_object(raw_event: dict[str, str]) -> Event:
+    return Event(
+        station_id=raw_event["station_id"],
+        time_start=dt.datetime.fromisoformat(raw_event["start"]),
+        time_end=dt.datetime.fromisoformat(raw_event["end"]),
+        snow_on_ground=_snow_on_ground_status(raw_event["sog"]),
+        rain_hours=int(raw_event["RA"]),
+        freezing_rain_hours=int(raw_event["FZRA"]),
+        solid_precipitation_hours=int(raw_event["SOLID"]),
+        unknown_precipitation_hours=int(raw_event["UP"]),
     )
+
+
+def load_events(events: list[Event], *, session: Session) -> None:
+    """Load events into the database.
+
+    Trying to follow the bulk load instructions, but it's hard to tell why this step
+    takes as long as it does. When using tqdm to monitor progress, things "stall" for
+    some time after the iterable is consumed. I expected this would not happen because
+    of under-the-hood batching, so I'm not really sure how to make this more performant,
+    or if we can.
+    """
+    session.execute(
+        insert(Event),
+        [event.__dict__ for event in events],
+    )
+
     session.commit()
 
 
