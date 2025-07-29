@@ -14,6 +14,7 @@ services:
     image: "nsidc/aross-stations-ui:v0.1.0"
     ports:
       - "80:80"
+      - "443:443"
     profiles: ["ui"]
 
 
