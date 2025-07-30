@@ -42,7 +42,7 @@ services:
       # Production domain (nsidc.org)
       - "traefik.http.routers.aross-prod.rule=Host(`nsidc.org`) && PathPrefix(`/apps/aross`)"
       - "traefik.http.routers.aross-prod.entrypoints=websecure"
-      - "traefik.http.routers.aross-prod.tls.certresolver=letsencrypt"
+      # - "traefik.http.routers.aross-prod.tls.certresolver=letsencrypt"
       - "traefik.http.routers.aross-prod.middlewares=strip-aross-path"
 
       # Integration domain router
