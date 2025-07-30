@@ -8,14 +8,48 @@ x-common: &common
 x-image: &image "nsidc/aross-stations-db"
 
 services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.letsencrypt.acme.email=scott.lewis@colorado.edu
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --log.level=INFO
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/acme.json:/letsencrypt/acme.json #chmod 600
+    restart: unless-stopped
+    profiles: ["ui"]
+
   ui:
     container_name: "aross-stations-ui"
     depends_on: ["api"]
     image: "nsidc/aross-stations-ui:v0.1.0"
-    ports:
-      - "80:80"
-      - "443:443"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.aross.rule=Host(`localhost`) # needs a domain, could be localhost
+      - traefik.http.routers.aross.entrypoints=websecure
+      - traefik.http.routers.aross.tls.certresolver=letsencrypt
+    restart: unless-stopped
     profiles: ["ui"]
+
+  # ui:
+  #   container_name: "aross-stations-ui"
+  #   depends_on: ["api"]
+  #   image: "nsidc/aross-stations-ui:v0.1.0"
+  #   ports:
+  #     - "80:80"
+  #   profiles: ["ui"]
 
 
   api:
