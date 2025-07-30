@@ -21,13 +21,15 @@ services:
       - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
       - --api.dashboard=true
       - --providers.docker=true
+      - --providers.file.filename=/cert/tls.yml
       - --log.level=INFO
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/acme.json:/letsencrypt/acme.json #chmod 600
+      - /cert:/cert:ro
+      # - ./traefik/acme.json:/letsencrypt/acme.json #chmod 600
     restart: unless-stopped
     profiles: ["ui"]
 
@@ -46,17 +48,17 @@ services:
       # Integration domain router
       - "traefik.http.routers.aross-integration.rule=Host(`integration.aross-stations.apps.int.nsidc.org`)"
       - "traefik.http.routers.aross-integration.entrypoints=websecure"
-      - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+      # - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
 
       # QA domain router
       - "traefik.http.routers.aross-integration.rule=Host(`qa.aross-stations.apps.int.nsidc.org`)"
       - "traefik.http.routers.aross-integration.entrypoints=websecure"
-      - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+      # - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
 
       # Staging domain router
       - "traefik.http.routers.aross-integration.rule=Host(`staging.aross-stations.apps.int.nsidc.org`)"
       - "traefik.http.routers.aross-integration.entrypoints=websecure"
-      - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+      # - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
 
       # Middleware for path
       - "traefik.http.middlewares.strip-aross-path.stripPrefix.prefixes=/apps/aross"
