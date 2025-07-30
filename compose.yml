@@ -36,10 +36,30 @@ services:
     depends_on: ["api"]
     image: "nsidc/aross-stations-ui:v0.1.0"
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.aross.rule=Host(`localhost`) # needs a domain, could be localhost
-      - traefik.http.routers.aross.entrypoints=websecure
-      - traefik.http.routers.aross.tls.certresolver=letsencrypt
+      - "traefik.enable=true"
+      # Production domain (nsidc.org)
+      - "traefik.http.routers.aross-prod.rule=Host(`nsidc.org`) && PathPrefix(`/apps/aross`)"
+      - "traefik.http.routers.aross-prod.entrypoints=websecure"
+      - "traefik.http.routers.aross-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.aross-prod.middlewares=strip-aross-path"
+
+      # Integration domain router
+      - "traefik.http.routers.aross-integration.rule=Host(`integration.aross-stations.apps.int.nsidc.org`)"
+      - "traefik.http.routers.aross-integration.entrypoints=websecure"
+      - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+
+      # QA domain router
+      - "traefik.http.routers.aross-integration.rule=Host(`qa.aross-stations.apps.int.nsidc.org`)"
+      - "traefik.http.routers.aross-integration.entrypoints=websecure"
+      - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+
+      # Staging domain router
+      - "traefik.http.routers.aross-integration.rule=Host(`staging.aross-stations.apps.int.nsidc.org`)"
+      - "traefik.http.routers.aross-integration.entrypoints=websecure"
+      - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+
+      # Middleware for path
+      - "traefik.http.middlewares.strip-aross-path.stripPrefix.prefixes=/apps/aross"
     restart: unless-stopped
     profiles: ["ui"]
 
