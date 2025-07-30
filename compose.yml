@@ -26,6 +26,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "8000:8000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /cert:/cert:ro
@@ -97,6 +98,8 @@ services:
       POSTGRES_DB: "aross"
       POSTGRES_USER: "aross"
       POSTGRES_PASSWORD: null
+    ports:
+      - "5432:5432"
     volumes:
       - "./_data:/var/lib/postgresql/data"
 
