@@ -61,19 +61,20 @@ services:
 
       # Integration domain router
       - "traefik.http.routers.aross-integration.rule=Host(`integration.aross-stations.apps.int.nsidc.org`)"
-      # - "traefik.http.routers.aross-integration.entrypoints=websecure"
-      # - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
-
-      # QA domain router
-      - "traefik.http.routers.aross-integration.rule=Host(`qa.aross-stations.apps.int.nsidc.org`)"
-      # - "traefik.http.routers.aross-integration.entrypoints=websecure"
-      # - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
-
-      # Staging domain router
-      - "traefik.http.routers.aross-integration.rule=Host(`staging.aross-stations.apps.int.nsidc.org`)"
       - "traefik.http.routers.aross-integration.entrypoints=websecure"
       - "traefik.http.routers.aross-integration.tls=true"
-      - "traefik.http.routers.aross-integration.tls.certresolver=myresolver"  # Or omit if using self-signed certs
+      - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+
+      # QA domain router
+      - "traefik.http.routers.aross-qa.rule=Host(`qa.aross-stations.apps.int.nsidc.org`)"
+      # - "traefik.http.routers.aross-qa.entrypoints=websecure"
+      # - "traefik.http.routers.aross-qa.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+
+      # Staging domain router
+      - "traefik.http.routers.aross-staging.rule=Host(`staging.aross-stations.apps.int.nsidc.org`)"
+      - "traefik.http.routers.aross-staging.entrypoints=websecure"
+      - "traefik.http.routers.aross-staging.tls=true"
+      - "traefik.http.routers.aross-staging.tls.certresolver=myresolver"  # Or omit if using self-signed certs
 
       # Middleware for path
       - "traefik.http.middlewares.strip-aross-path.stripPrefix.prefixes=/apps/aross"
