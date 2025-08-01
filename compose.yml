@@ -52,22 +52,21 @@ services:
       - "traefik.enable=true"
 
       # local
-      - "traefik.http.routers.localhost.rule=Host(`localhost`)"
-      - "traefik.http.routers.localhost.entrypoints=websecure"
-      - "traefik.http.routers.localhost.tls=true"
-      - "traefik.http.routers.localhost.tls.certresolver=letsencrypt"
-
-      # Production domain (nsidc.org)
-      - "traefik.http.routers.aross-prod.rule=Host(`nsidc.org`) && PathPrefix(`/apps/aross`)"
-      # - "traefik.http.routers.aross-prod.entrypoints=websecure"
-      # - "traefik.http.routers.aross-prod.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.aross-prod.middlewares=strip-aross-path"
+      - "traefik.http.routers.aross-ui-localhost.rule=Host(`localhost`)"
+      - "traefik.http.routers.aross-ui-localhost.entrypoints=websecure"
+      - "traefik.http.routers.aross-ui-localhost.tls=true"
+      - "traefik.http.routers.aross-ui-localhost.tls.certresolver=letsencrypt"
 
       # Integration domain router
-      - "traefik.http.routers.aross-integration.rule=Host(`integration.aross-stations.apps.int.nsidc.org`)"
-      - "traefik.http.routers.aross-integration.entrypoints=websecure"
-      - "traefik.http.routers.aross-integration.tls=true"
-      - "traefik.http.routers.aross-integration.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+      - "traefik.http.routers.aross-ui-integration.rule=Host(`integration.aross-stations.apps.int.nsidc.org`)"
+      - "traefik.http.routers.aross-ui-integration.entrypoints=websecure"
+      - "traefik.http.routers.aross-ui-integration.tls=true"
+      - "traefik.http.routers.aross-ui-integration.tls.certresolver=letsencrypt"
+
+      - "traefik.http.routers.aross-ui-integration-proxy.rule=Host(`integration.nsidc.org`)"
+      - "traefik.http.routers.aross-ui-integration-proxy.entrypoints=websecure"
+      - "traefik.http.routers.aross-ui-integration-proxy.tls=true"
+      - "traefik.http.routers.aross-ui-integration-proxy.tls.certresolver=letsencrypt"
 
       # QA domain router
       - "traefik.http.routers.aross-qa.rule=Host(`qa.aross-stations.apps.int.nsidc.org`)"
@@ -79,6 +78,12 @@ services:
       - "traefik.http.routers.aross-staging.entrypoints=websecure"
       - "traefik.http.routers.aross-staging.tls=true"
       - "traefik.http.routers.aross-staging.tls.certresolver=letsencrypt"  # Or omit if using self-signed certs
+
+      # Production domain (nsidc.org)
+      - "traefik.http.routers.aross-prod.rule=Host(`nsidc.org`) && PathPrefix(`/apps/aross`)"
+      # - "traefik.http.routers.aross-prod.entrypoints=websecure"
+      # - "traefik.http.routers.aross-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.aross-prod.middlewares=strip-aross-path"
 
       # Middleware for path
       - "traefik.http.middlewares.strip-aross-path.stripPrefix.prefixes=/apps/aross"
@@ -109,11 +114,24 @@ services:
       - "traefik.enable=true"
 
       # local
-      - "traefik.http.routers.localhost_api.rule=Host(`localhost`)"
-      - "traefik.http.routers.localhost_api.entrypoints=api"
-      - "traefik.http.routers.localhost_api.tls=true"
-      - "traefik.http.routers.localhost_api.tls.certresolver=letsencrypt"
-      - "traefik.http.services.localhost_api.loadbalancer.server.port=8000"
+      - "traefik.http.routers.aross-api-localhost.rule=Host(`localhost`)"
+      - "traefik.http.routers.aross-api-localhost.entrypoints=api"
+      - "traefik.http.routers.aross-api-localhost.tls=true"
+      - "traefik.http.routers.aross-api-localhost.tls.certresolver=letsencrypt"
+      - "traefik.http.services.aross-api-localhost.loadbalancer.server.port=8000"
+
+      # integration
+      - "traefik.http.routers.aross-api-integration.rule=Host(`integration.aross-stations.apps.int.nsidc.org`)"
+      - "traefik.http.routers.aross-api-integration.entrypoints=api"
+      - "traefik.http.routers.aross-api-integration.tls=true"
+      - "traefik.http.routers.aross-api-integration.tls.certresolver=letsencrypt"
+      - "traefik.http.services.aross-api-integration.loadbalancer.server.port=8000"
+
+      - "traefik.http.routers.aross-api-integration-proxy.rule=Host(`integration.nsidc.org`)"
+      - "traefik.http.routers.aross-api-integration-proxy.entrypoints=api"
+      - "traefik.http.routers.aross-api-integration-proxy.tls=true"
+      - "traefik.http.routers.aross-api-integration-proxy.tls.certresolver=letsencrypt"
+      - "traefik.http.services.aross-api-integration-proxy.loadbalancer.server.port=8000"
 
     environment:
       AROSS_DB_CONNSTR: null
