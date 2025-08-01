@@ -10,6 +10,8 @@ services:
   api:
     <<: *dev-common
     command: ["dev", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
+    # ports:
+    #   - "8000:8000"
     # NOTE: In place of the above command, which uses the image's default
     # `fastapi` entrypoint, you can run the container with no server (using
     # "sleep" instead):
@@ -25,5 +27,8 @@ services:
   cli:
     <<: *dev-common
 
+  traefik:
+    profiles: ["ui"]
+  
   jupyterlab:
     <<: *dev-common
