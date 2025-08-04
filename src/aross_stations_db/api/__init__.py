@@ -8,6 +8,7 @@ api = FastAPI(
         "Rain on snow events detected by"
         " Automated Surface Observing System (ASOS) stations"
     ),
+    openapi_url="/api/aross-stations/openapi.json"
 )
 api.include_router(v1_router, prefix="/v1", tags=["v1"])
 api.add_middleware(
@@ -20,7 +21,13 @@ api.add_middleware(
 
 
 @api.get("/")
-def get() -> dict[str, str]:
+def get_root() -> dict[str, str]:
     return {
-        "Hello": "The root of this API doesn't do anything. Please check out '/docs'!"
+        "Hello": "The root of this API doesn't do anything. Please check out '/docs' or something!"
     }
+
+
+@api.get("/routes")
+def get_routes() -> dict[str, str]:
+    url_list = [{"path": route.path, "name": route.name} for route in api.routes]
+    return url_list
