@@ -25,9 +25,3 @@ def get_root() -> dict[str, str]:
     return {
         "Hello": "The root of this API doesn't do anything. Please check out '/docs' or something!"
     }
-
-
-@api.get("/routes")
-def get_routes() -> dict[str, str]:
-    url_list = [{"path": route.path, "name": route.name} for route in api.routes]
-    return url_list
