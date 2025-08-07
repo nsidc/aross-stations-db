@@ -17,13 +17,9 @@ services:
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.websecure.address=:443
       - --entrypoints.api.address=:8000
-      # - --entrypoints.api.http.redirections.entryPoint.to=apisecure
-      # - --entrypoints.api.http.redirections.entryPoint.scheme=https
-      # - --entrypoints.apisecure.address=:8001
       - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
       - --certificatesresolvers.letsencrypt.acme.email=scott.lewis@colorado.edu
       - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-      # - --api.dashboard=true
       - --providers.docker=true
       - --log.level=INFO
     ports:
@@ -40,7 +36,7 @@ services:
   ui:
     container_name: "aross-stations-ui"
     depends_on: ["api"]
-    image: "nsidc/aross-stations-ui:v0.1.3"
+    image: "nsidc/aross-stations-ui:latest"
     labels:
       - "traefik.enable=true"
 
