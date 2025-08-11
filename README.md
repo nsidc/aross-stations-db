@@ -37,7 +37,7 @@ for more details!**
 Set up the development compose configuration to be automatically loaded:
 
 ```bash
-ln -s compose.dev.yml compose.override.dev.yml
+ln -s compose.dev.yml compose.override.yml
 ```
 
 
@@ -116,6 +116,10 @@ The stack is configured within `compose.yml` and includes containers:
 * `aross-stations-admin`: An [Adminer](https://www.adminer.org/) container for
   inspecting the database in the browser.
 * `aross-stations-api`: An HTTP API for accessing data in the database.
+* `aross-stations-ui` : The front-end with map and user interactivity for accessing data
+
+The UI and API containers are served behind a traefik reverse proxy, allowing for SSL,
+as well as having them to use the same port and path structure.
 
 ```bash
 docker compose --profile ui up --pull=always --detach
@@ -215,7 +219,15 @@ services.
 
 ### View UI
 
-Navigate to `http://localhost:80`.
+Navigate to `https://localhost/apps/aross-stations`. (Uses port 443)
+
+### Access API
+
+Use `https://localhost/api/aross-stations/v1/...`
+
+The API itself runs on port 8000 of its container, but with the `traefik` reverse proxy
+you can just use the same port (but with the `/api/aross-stations` path prefix) and it
+will direct the traffic there.
 
 
 ### Experiment in JupyterLab
@@ -224,6 +236,8 @@ This repository provides a demo notebook to experiment with the API. In your bro
 navigate to `http://localhost:8888`. The password is the same as the database password
 you set earlier.
 
+Note: This container is NOT handled by the traefix reverse proxy; you can just access it
+using the non-secure port shown here.
 
 ## Cleanup
 

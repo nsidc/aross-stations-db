@@ -1,0 +1,46 @@
+
+x-dev-common: &dev-common
+  image: "nsidc/aross-stations-db:dev"
+  build: "."
+  volumes:
+    - "${PWD}:/app"
+
+
+services:
+  ui:
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.aross-ui.rule=(Host(`staging.aross-stations.apps.int.nsidc.org`) || Host(`staging.nsidc.org`)) && PathPrefix(`/apps/aross-stations`)"
+      - "traefik.http.routers.aross-ui.entrypoints=websecure"
+      - "traefik.http.routers.aross-ui.tls=true"
+      - "traefik.http.routers.aross-ui.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.aross-ui.middlewares=aross-ui"
+      - "traefik.http.routers.aross-ui.service=aross-ui"
+      - "traefik.http.middlewares.aross-ui.stripprefix.prefixes=/apps/aross-stations"
+      - "traefik.http.services.aross-ui.loadbalancer.server.port=80"
+
+
+  api:
+    <<: *dev-common
+    command: ["dev", "--host", "0.0.0.0", "./src/aross_stations_db/api"]
+
+    labels:
+      - "traefik.enable=true"
+
+      # local
+      - "traefik.http.routers.aross-api.rule=(Host(`staging.aross-stations.apps.int.nsidc.org`) || Host(`staging.nsidc.org`)) && PathPrefix(`/api/aross-stations`)"
+      - "traefik.http.routers.aross-api.entrypoints=websecure"
+      - "traefik.http.routers.aross-api.tls=true"
+      - "traefik.http.routers.aross-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.aross-api.middlewares=aross-api"
+      - "traefik.http.routers.aross-api.service=aross-api"
+      - "traefik.http.middlewares.aross-api.stripprefix.prefixes=/api/aross-stations"
+      - "traefik.http.services.aross-api.loadbalancer.server.port=8000"
+    
+
+  cli:
+    <<: *dev-common
+  
+  jupyterlab:
+    <<: *dev-common
