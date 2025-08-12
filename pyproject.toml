@@ -60,8 +60,10 @@ docs = [
 ui = [
   "jupyterlab",
   "leafmap",
-  "pandas",
   "matplotlib",
+  "pandas",
+  "pandas-stubs",
+  "types-tqdm",
 ]
 
 [project.urls]

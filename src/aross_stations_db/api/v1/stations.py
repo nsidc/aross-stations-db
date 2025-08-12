@@ -36,15 +36,15 @@ async def get(
 
 def station_data(
     db: Session,
-    start: dt.datetime,
-    end: dt.datetime,
+    start: dt.datetime | None,
+    end: dt.datetime | None,
     stations: list[str]
 ) -> StreamingResponse:
     now = dt.datetime.now().strftime("%Y%m%d%H%M%S")
     fileRoot = 'stationdata'
 
     query = station_data_query(db=db, start=start, end=end, stations=stations)
-    df = pd.read_sql(query.statement, query.session.bind)
+    df = pd.read_sql(query.statement, query.session.connection())
 
     stream = io.StringIO()
     df.to_csv(stream, index=False)
@@ -57,8 +57,8 @@ def station_data(
 async def station_data_get(
     db: Annotated[Session, Depends(get_db_session)],
     *,
-    start: Annotated[dt.datetime, Query(description="ISO-format timestamp")] = None,
-    end: Annotated[dt.datetime, Query(description="ISO-format timestamp")] = None,
+    start: Annotated[dt.datetime, Query(description="ISO-format timestamp")] | None = None,
+    end: Annotated[dt.datetime, Query(description="ISO-format timestamp")] | None = None,
     stations: Annotated[list[str], Query(description="Station ID(s)")]
 ) -> StreamingResponse:
     return station_data(db, start, end, stations)
@@ -68,8 +68,8 @@ async def station_data_get(
 async def station_data_post(
     db: Annotated[Session, Depends(get_db_session)],
     *,
-    start: Annotated[dt.datetime, Form(description="ISO-format timestamp")] = None,
-    end: Annotated[dt.datetime, Form(description="ISO-format timestamp")] = None,
+    start: Annotated[dt.datetime, Form(description="ISO-format timestamp")] | None  = None,
+    end: Annotated[dt.datetime, Form(description="ISO-format timestamp")] | None  = None,
     stations: Annotated[list[str], Form(description="Station ID(s)")]
 ) -> StreamingResponse:
     return station_data(db, start, end, stations)
