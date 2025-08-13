@@ -39,29 +39,30 @@ aross-stations-db = "aross_stations_db.cli:cli"
 
 [project.optional-dependencies]
 test = [
+  "mypy >=1.10",
+  "pandas-stubs",
   "pytest >=6",
   "pytest-cov >=3",
-  "mypy >=1.10",
   "types-tqdm",
 ]
 dev = [
-  "pytest >=6",
-  "pytest-cov >=3",
   "nox",
   "pre-commit",
+  "pytest >=6",
+  "pytest-cov >=3",
 ]
 docs = [
-  "sphinx>=7.0",
-  "myst_parser>=0.13",
-  "sphinx_copybutton",
-  "sphinx_autodoc_typehints",
   "furo>=2023.08.17",
+  "myst_parser>=0.13",
+  "sphinx>=7.0",
+  "sphinx_autodoc_typehints",
+  "sphinx_copybutton",
 ]
 ui = [
   "jupyterlab",
   "leafmap",
-  "pandas",
   "matplotlib",
+  "pandas",
 ]
 
 [project.urls]

@@ -39,6 +39,33 @@ def stations_query(
     return query.group_by(Station.id)
 
 
+def station_data_query(
+    db: Session,
+    *,
+    start: dt.datetime | None,
+    end: dt.datetime | None,
+    stations: list[str] = [],
+) -> RowReturningQuery[tuple[str, dt.datetime, dt.datetime, bool | None, int, int, int, int]]:
+    print(type(stations))
+    query = db.query(
+        Event.station_id,
+        Event.time_start,
+        Event.time_end,
+        Event.snow_on_ground,
+        Event.rain_hours,
+        Event.freezing_rain_hours,
+        Event.solid_precipitation_hours,
+        Event.unknown_precipitation_hours
+    ).filter(Event.station_id.in_(stations))
+
+    if start is not None:
+        query = query.filter(Event.time_start >= start)
+    if end is not None:
+        query = query.filter(Event.time_end < end)
+
+    return query.order_by(Event.station_id)
+
+
 def timeseries_query(
     db: Session,
     *,
