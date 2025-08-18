@@ -1,4 +1,5 @@
 import datetime as dt
+import io
 from typing import Annotated
 
 from annotated_types import Ge, Le
@@ -8,8 +9,12 @@ from geojson_pydantic import (
     Point,
 )
 from geojson_pydantic.types import Position2D
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from pydantic import BaseModel
 from sqlalchemy import Row
+from sqlalchemy.orm.query import RowReturningQuery
 
 from aross_stations_db.db.tables import Station
 
@@ -62,6 +67,82 @@ def timeseries_query_results_to_json(
         TimeseriesJsonElement(date=date, event_count=event_count)
         for date, event_count in results
     ]
+
+
+def timeseries_query_results_to_bar_plot_buffer(
+    query: RowReturningQuery[tuple[dt.datetime, int]],
+    start: dt.date,
+    end: dt.date,
+    format: str = 'png'
+) -> io.BytesIO:
+    data = pd.read_sql(query.statement, query.session.connection())
+    data.set_index('month', inplace=True)
+
+    title_parts = [
+        f"Monthly Rain-on-Snow Events",
+        f"[{start.strftime("%Y-%m")} - {end.strftime("%Y-%m")}]"
+    ]
+    title = "\n".join(title_parts)
+
+    if len(data) == 0:
+        data.loc[start] = 0
+        data.loc[end] = 0
+
+    data.index = data.index.strftime("%Y-%m")
+    data = add_missing_plot_months(data)
+
+    plot = data.plot(
+        kind="bar",
+        title=title,
+        ylabel="Event Count",
+        xlabel="Month",
+        rot=45,
+        legend=False,
+    )
+
+    ticks = plot.get_xticklines()
+    labels = plot.get_xticklabels()
+
+    # Evenly space out the tick labels to avoid overcrowding
+    indexes = np.linspace(0, len(labels)-1, num=12, dtype=int)
+    for i, l in enumerate(labels):
+        if i not in indexes:
+            l.set_visible(False)
+        else:
+            l.set_horizontalalignment('right')
+            l.set_rotation_mode('anchor')
+            ticks[i*2].set_markersize(6)
+    
+    plt.tight_layout()
+
+    # Create the buffer and return it so it can be sent to the requester
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format="png")
+    plt.close()
+
+    buffer.seek(0)
+
+    return buffer
+
+
+# If there are any months missing in the dataframe, add a "count 0" entry for them
+def add_missing_plot_months(df: pd.DataFrame):
+    start = df.index[0]
+    end = df.index[-1]
+
+    syear, smonth = map(int, start.split('-'))
+    eyear, emonth = map(int, end.split('-'))
+
+    while [syear, smonth] != [eyear, emonth]:
+        smonth += 1
+        if smonth > 12:
+            smonth = 1
+            syear += 1
+        key = f"{syear:04}-{smonth:02}"
+        if key not in df.index:
+            df.loc[key] = [0]
+        
+    return df.sort_index()
 
 
 class ClimatologyJsonElement(BaseModel):

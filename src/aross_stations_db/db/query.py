@@ -46,7 +46,6 @@ def station_data_query(
     end: dt.datetime | None,
     stations: list[str] = [],
 ) -> RowReturningQuery[tuple[str, dt.datetime, dt.datetime, bool | None, int, int, int, int]]:
-    print(type(stations))
     query = db.query(
         Event.station_id,
         Event.time_start,
@@ -72,6 +71,7 @@ def timeseries_query(
     start: dt.datetime,
     end: dt.datetime,
     polygon: str | None = None,
+    stations: list[str] | None = None,
 ) -> RowReturningQuery[tuple[dt.datetime, int]]:
     query = db.query(
         func.date_trunc("month", Event.time_start, type_=DateTime).label("month"),
@@ -87,6 +87,9 @@ def timeseries_query(
             )
         )
 
+    if stations:
+        query = query.filter(Event.station_id.in_(stations))
+    
     return query.group_by("month").order_by("month")
 
 
