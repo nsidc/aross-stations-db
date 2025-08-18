@@ -78,16 +78,21 @@ def timeseries_query_results_to_bar_plot_buffer(
     data = pd.read_sql(query.statement, query.session.connection())
     data.set_index('month', inplace=True)
 
+    start_str = start.strftime("%Y-%m")
+    end_str = end.strftime("%Y-%m")
+
     title_parts = [
         f"Monthly Rain-on-Snow Events",
-        f"[{start.strftime("%Y-%m")} - {end.strftime("%Y-%m")}]"
+        f"[{start_str} - {end_str}]"
     ]
     title = "\n".join(title_parts)
 
     if len(data) == 0:
-        data.loc[start] = 0
-        data.loc[end] = 0
+        data.loc[start_str] = 0
+        data.loc[end_str] = 0
 
+    
+    data.index = pd.to_datetime(data.index)
     data.index = data.index.strftime("%Y-%m")
     data = add_missing_plot_months(data)
 
@@ -126,7 +131,7 @@ def timeseries_query_results_to_bar_plot_buffer(
 
 
 # If there are any months missing in the dataframe, add a "count 0" entry for them
-def add_missing_plot_months(df: pd.DataFrame):
+def add_missing_plot_months(df: pd.DataFrame) -> pd.DataFrame:
     start = df.index[0]
     end = df.index[-1]
 
