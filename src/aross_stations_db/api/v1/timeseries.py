@@ -15,8 +15,9 @@ from aross_stations_db.api.v1.output import (
 )
 from aross_stations_db.db.query import timeseries_query
 
-router = APIRouter()
+from loguru import logger
 
+router = APIRouter()
 
 @router.get("/monthly")
 def get_monthly_timeseries(
@@ -25,24 +26,26 @@ def get_monthly_timeseries(
     start: Annotated[dt.datetime, Query(description="ISO-format timestamp")],
     end: Annotated[dt.datetime, Query(description="ISO-format timestamp")],
     polygon: Annotated[str | None, WKTElement, Query(description="WKT shape")] = None,
-    stations: Annotated[list[str] | None, Query(description="List of station identifiers")] = None,
+    stations: Annotated[list[str], Query(description="List of station identifiers")] = [],
 ) -> list[TimeseriesJsonElement]:
     """Get a monthly timeseries of events matching query parameters."""
+    logger.debug(f"STATIONS: {stations}")
     query = timeseries_query(db=db, start=start, end=end, polygon=polygon, stations=stations)
 
     return timeseries_query_results_to_json(query.all())
 
 
 @router.post("/monthly")
-def get_monthly_timeseries(
+def post_monthly_timeseries(
     db: Annotated[Session, Depends(get_db_session)],
     *,
     start: Annotated[dt.datetime, Form(description="ISO-format timestamp")],
     end: Annotated[dt.datetime, Form(description="ISO-format timestamp")],
     polygon: Annotated[str | None, WKTElement, Form(description="WKT shape")] = None,
-    stations: Annotated[list[str] | None, Form(description="List of station identifiers")] = None,
+    stations: Annotated[list[str], Form(description="List of station identifiers")] = [],
 ) -> list[TimeseriesJsonElement]:
     """Get a monthly timeseries of events matching query parameters."""
+    logger.debug(f"STATIONS: {stations}")
     query = timeseries_query(db=db, start=start, end=end, polygon=polygon, stations=stations)
 
     return timeseries_query_results_to_json(query.all())
@@ -55,7 +58,7 @@ def get_monthly_timeseries_png(
     start: Annotated[dt.datetime, Query(description="ISO-format timestamp")],
     end: Annotated[dt.datetime, Query(description="ISO-format timestamp")],
     polygon: Annotated[str | None, WKTElement, Query(description="WKT shape")] = None,
-    stations: Annotated[list[str] | None, Query(Description="List of station identifiers")] = None,
+    stations: Annotated[list[str], Query(Description="List of station identifiers")] = [],
 ) -> StreamingResponse:
     """Get a monthly timeseries image plot of events matching query parameters."""
     query = timeseries_query(db=db, start=start, end=end, polygon=polygon, stations=stations)
@@ -65,13 +68,13 @@ def get_monthly_timeseries_png(
 
 
 @router.post("/monthly/png")
-def get_monthly_timeseries_png(
+def post_monthly_timeseries_png(
     db: Annotated[Session, Depends(get_db_session)],
     *,
     start: Annotated[dt.datetime, Form(description="ISO-format timestamp")],
     end: Annotated[dt.datetime, Form(description="ISO-format timestamp")],
     polygon: Annotated[str | None, WKTElement, Form(description="WKT shape")] = None,
-    stations: Annotated[list[str] | None, Form(Description="List of station identifiers")] = None,
+    stations: Annotated[list[str], Form(Description="List of station identifiers")] = [],
 ) -> StreamingResponse:
     """Get a monthly timeseries image plot of events matching query parameters."""
     query = timeseries_query(db=db, start=start, end=end, polygon=polygon, stations=stations)
