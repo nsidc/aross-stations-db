@@ -25,6 +25,9 @@ dependencies = [
   "loguru",
   "tqdm",
   "fastapi ~=0.111.0",
+  "matplotlib",
+  "numpy",
+  "pandas",
   "pydantic ~=2.0",
   "pydantic-settings",
   "sqlalchemy ~=2.0",
@@ -61,8 +64,6 @@ docs = [
 ui = [
   "jupyterlab",
   "leafmap",
-  "matplotlib",
-  "pandas",
 ]
 
 [project.urls]
