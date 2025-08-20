@@ -28,7 +28,6 @@ services:
     labels:
       - "traefik.enable=true"
 
-      # local
       - "traefik.http.routers.aross-api.rule=(Host(`staging.aross-stations.apps.int.nsidc.org`) || Host(`staging.nsidc.org`)) && PathPrefix(`/api/aross-stations`)"
       - "traefik.http.routers.aross-api.entrypoints=websecure"
       - "traefik.http.routers.aross-api.tls=true"
