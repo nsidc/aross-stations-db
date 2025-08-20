@@ -36,7 +36,7 @@ services:
   ui:
     container_name: "aross-stations-ui"
     depends_on: ["api"]
-    image: "nsidc/aross-stations-ui:latest"
+    image: "nsidc/aross-stations-ui:v0.3.0"
     labels:
       - "traefik.enable=true"
 
