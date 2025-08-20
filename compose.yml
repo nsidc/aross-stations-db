@@ -41,7 +41,7 @@ services:
       - "traefik.enable=true"
 
       # Production domains (blue, green, and nsidc.org)
-      - "traefik.http.routers.aross-ui.rule=(Host(`blue.aross-stations.apps.int.nsidc.org`) || `green.aross-stations.apps.int.nsidc.org`) || Host(`nsidc.org`)) && PathPrefix(`/apps/aross-stations`)"
+      - "traefik.http.routers.aross-ui.rule=(Host(`blue.aross-stations.apps.int.nsidc.org`) || Host(`green.aross-stations.apps.int.nsidc.org`) || Host(`nsidc.org`)) && PathPrefix(`/apps/aross-stations`)"
       - "traefik.http.routers.aross-ui.entrypoints=websecure"
       - "traefik.http.routers.aross-ui.tls=true"
       - "traefik.http.routers.aross-ui.tls.certresolver=letsencrypt"
