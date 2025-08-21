@@ -40,7 +40,8 @@ services:
     labels:
       - "traefik.enable=true"
 
-      - "traefik.http.routers.aross-ui.rule=Host(`localhost`) && PathPrefix(`/apps/aross-stations`)"
+      # Production domains (blue, green, and nsidc.org)
+      - "traefik.http.routers.aross-ui.rule=(Host(`blue.aross-stations.apps.int.nsidc.org`) || Host(`green.aross-stations.apps.int.nsidc.org`) || Host(`nsidc.org`)) && PathPrefix(`/apps/aross-stations`)"
       - "traefik.http.routers.aross-ui.entrypoints=websecure"
       - "traefik.http.routers.aross-ui.tls=true"
       - "traefik.http.routers.aross-ui.tls.certresolver=letsencrypt"
@@ -48,12 +49,6 @@ services:
       - "traefik.http.routers.aross-ui.service=aross-ui"
       - "traefik.http.middlewares.aross-ui.stripprefix.prefixes=/apps/aross-stations"
       - "traefik.http.services.aross-ui.loadbalancer.server.port=80"
-
-      # Production domain (nsidc.org)
-      # - "traefik.http.routers.aross-prod.rule=Host(`nsidc.org`) && PathPrefix(`/apps/aross`)"
-      # - "traefik.http.routers.aross-prod.entrypoints=websecure"
-      # - "traefik.http.routers.aross-prod.tls.certresolver=letsencrypt"
-      # - "traefik.http.routers.aross-prod.middlewares=strip-aross-path"
 
     restart: unless-stopped
     profiles: ["ui"]
@@ -71,8 +66,8 @@ services:
     labels:
       - "traefik.enable=true"
 
-      # local
-      - "traefik.http.routers.aross-api.rule=Host(`localhost`) && PathPrefix(`/api/aross-stations`)"
+      # Production domains (blue, green, and nsidc.org)
+      - "traefik.http.routers.aross-api.rule=(Host(`blue.aross-stations.apps.int.nsidc.org`) || Host(`green.aross-stations.apps.int.nsidc.org`) || Host(`nsidc.org`)) && PathPrefix(`/api/aross-stations`)"
       - "traefik.http.routers.aross-api.entrypoints=websecure"
       - "traefik.http.routers.aross-api.tls=true"
       - "traefik.http.routers.aross-api.tls.certresolver=letsencrypt"

@@ -40,6 +40,7 @@ Set up the development compose configuration to be automatically loaded:
 ln -s compose.dev.yml compose.override.yml
 ```
 
+(Note - the main `compose.yml` file is intended for production release)
 
 ### Before starting the containers: dev environment setup
 
