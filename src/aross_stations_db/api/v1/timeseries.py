@@ -15,8 +15,6 @@ from aross_stations_db.api.v1.output import (
 )
 from aross_stations_db.db.query import timeseries_query
 
-from loguru import logger
-
 router = APIRouter()
 
 @router.get("/monthly")
@@ -29,7 +27,6 @@ def get_monthly_timeseries(
     stations: Annotated[list[str], Query(description="List of station identifiers")] = [],
 ) -> list[TimeseriesJsonElement]:
     """Get a monthly timeseries of events matching query parameters."""
-    logger.debug(f"STATIONS: {stations}")
     query = timeseries_query(db=db, start=start, end=end, polygon=polygon, stations=stations)
 
     return timeseries_query_results_to_json(query.all())
@@ -45,7 +42,6 @@ def post_monthly_timeseries(
     stations: Annotated[list[str], Form(description="List of station identifiers")] = [],
 ) -> list[TimeseriesJsonElement]:
     """Get a monthly timeseries of events matching query parameters."""
-    logger.debug(f"STATIONS: {stations}")
     query = timeseries_query(db=db, start=start, end=end, polygon=polygon, stations=stations)
 
     return timeseries_query_results_to_json(query.all())

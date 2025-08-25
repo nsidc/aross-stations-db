@@ -68,8 +68,8 @@ async def station_data_get(
 async def station_data_post(
     db: Annotated[Session, Depends(get_db_session)],
     *,
-    start: Annotated[dt.datetime, Form(description="ISO-format timestamp")] | None  = None,
-    end: Annotated[dt.datetime, Form(description="ISO-format timestamp")] | None  = None,
+    start: Annotated[dt.datetime, Form(description="ISO-format timestamp")],
+    end: Annotated[dt.datetime, Form(description="ISO-format timestamp")],
     stations: Annotated[list[str], Form(description="Station ID(s)")]
 ) -> StreamingResponse:
     return station_data(db, start, end, stations)
