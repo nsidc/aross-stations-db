@@ -115,20 +115,21 @@ def timeseries_query_results_to_plot_buffer(
     data.index = data.index.strftime("%Y-%m")
     data = add_missing_timeseries_months(data)
 
-    options = {
-        'kind': 'line',
-        'title': title,
-        'ylabel': "Event Count",
-        'xlabel': "Month",
-        'rot': 45,
-        'legend': False,
-    }
+    marker = None
 
     # Add the "dot" for a timeseries with only one data point; otherwise, nothing will show up
     if len(data) == 1:
-        options['marker'] = 'o'
+        marker = 'o'
 
-    plot = data.plot(**options)
+    plot = data.plot(
+        kind = 'line',
+        title = title,
+        ylabel = "Event Count",
+        xlabel = "Month",
+        rot = 45,
+        legend = False,
+        marker = marker,
+    )
 
     ticks = plot.get_xticklines()
     labels = plot.get_xticklabels()
@@ -178,7 +179,7 @@ def monthly_aggregate_query_results_to_json(
 
 
 def monthly_aggregate_query_results_to_plot_buffer(
-    query: RowReturningQuery[tuple[dt.datetime, int]],
+    query: RowReturningQuery[tuple[dt.datetime, int]] | RowReturningQuery[tuple[int, int]],
     start: dt.date,
     end: dt.date,
     main_title: str = 'Monthly Report of Rain-on-Snow Events',
@@ -203,16 +204,14 @@ def monthly_aggregate_query_results_to_plot_buffer(
     
     data = add_missing_aggregate_months(data)
 
-    options = {
-        'kind': 'bar',
-        'title': title,
-        'ylabel': "Event Count",
-        'xlabel': "Month",
-        'rot': 0,
-        'legend': False,
-    }
-
-    data.plot(**options)
+    data.plot(
+        kind = 'bar',
+        title = title,
+        ylabel = "Event Count",
+        xlabel = "Month",
+        rot = 0,
+        legend = False,
+    )
     plt.tight_layout()
 
     # Create the buffer and return it so it can be sent to the requester
