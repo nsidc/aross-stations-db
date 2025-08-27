@@ -55,6 +55,26 @@ def stations_query_results_to_geojson(
     )
 
 
+# If there are any months missing in the dataframe, add a "count 0" entry for them
+def add_missing_timeseries_months(df: pd.DataFrame) -> pd.DataFrame:
+    start = df.index[0]
+    end = df.index[-1]
+
+    syear, smonth = map(int, start.split('-'))
+    eyear, emonth = map(int, end.split('-'))
+
+    while [syear, smonth] != [eyear, emonth]:
+        smonth += 1
+        if smonth > 12:
+            smonth = 1
+            syear += 1
+        key = f"{syear:04}-{smonth:02}"
+        if key not in df.index:
+            df.loc[key] = [0]
+        
+    return df.sort_index()
+
+
 class TimeseriesJsonElement(BaseModel):
     date: dt.date
     event_count: int
@@ -69,7 +89,7 @@ def timeseries_query_results_to_json(
     ]
 
 
-def timeseries_query_results_to_bar_plot_buffer(
+def timeseries_query_results_to_plot_buffer(
     query: RowReturningQuery[tuple[dt.datetime, int]],
     start: dt.date,
     end: dt.date,
@@ -90,19 +110,25 @@ def timeseries_query_results_to_bar_plot_buffer(
     if len(data) == 0:
         data.loc[start_str] = 0
         data.loc[end_str] = 0
-
     
     data.index = pd.to_datetime(data.index)
     data.index = data.index.strftime("%Y-%m")
-    data = add_missing_plot_months(data)
+    data = add_missing_timeseries_months(data)
+
+    marker = None
+
+    # Add the "dot" for a timeseries with only one data point; otherwise, nothing will show up
+    if len(data) == 1:
+        marker = 'o'
 
     plot = data.plot(
-        kind="bar",
-        title=title,
-        ylabel="Event Count",
-        xlabel="Month",
-        rot=45,
-        legend=False,
+        kind = 'line',
+        title = title,
+        ylabel = "Event Count",
+        xlabel = "Month",
+        rot = 45,
+        legend = False,
+        marker = marker,
     )
 
     ticks = plot.get_xticklines()
@@ -122,7 +148,7 @@ def timeseries_query_results_to_bar_plot_buffer(
 
     # Create the buffer and return it so it can be sent to the requester
     buffer = io.BytesIO()
-    plt.savefig(buffer, format="png")
+    plt.savefig(buffer, format=format)
     plt.close()
 
     buffer.seek(0)
@@ -130,35 +156,69 @@ def timeseries_query_results_to_bar_plot_buffer(
     return buffer
 
 
-# If there are any months missing in the dataframe, add a "count 0" entry for them
-def add_missing_plot_months(df: pd.DataFrame) -> pd.DataFrame:
-    start = df.index[0]
-    end = df.index[-1]
-
-    syear, smonth = map(int, start.split('-'))
-    eyear, emonth = map(int, end.split('-'))
-
-    while [syear, smonth] != [eyear, emonth]:
-        smonth += 1
-        if smonth > 12:
-            smonth = 1
-            syear += 1
-        key = f"{syear:04}-{smonth:02}"
+def add_missing_aggregate_months(df: pd.DataFrame) -> pd.DataFrame:
+    for key in range(1,13):
         if key not in df.index:
             df.loc[key] = [0]
         
     return df.sort_index()
 
 
-class ClimatologyJsonElement(BaseModel):
+class MonthlyAggregateJsonElement(BaseModel):
     month: Annotated[int, Ge(1), Le(12)]
     event_count: int
 
 
-def climatology_query_results_to_json(
+def monthly_aggregate_query_results_to_json(
     results: list[Row[tuple[int, int]]],
-) -> list[ClimatologyJsonElement]:
+) -> list[MonthlyAggregateJsonElement]:
     return [
-        ClimatologyJsonElement(month=month, event_count=event_count)
+        MonthlyAggregateJsonElement(month=month, event_count=event_count)
         for month, event_count in results
     ]
+
+
+def monthly_aggregate_query_results_to_plot_buffer(
+    query: RowReturningQuery[tuple[dt.datetime, int]] | RowReturningQuery[tuple[int, int]],
+    start: dt.date,
+    end: dt.date,
+    main_title: str = 'Monthly Report of Rain-on-Snow Events',
+    format: str = 'png'
+) -> io.BytesIO:
+    data = pd.read_sql(query.statement, query.session.connection())
+    data.set_index('month', inplace=True)
+    data.index = data.index.astype(int)
+
+    start_str = start.strftime("%Y-%m")
+    end_str = end.strftime("%Y-%m")
+
+    title_parts = [
+        main_title,
+        f"[{start_str} - {end_str}]"
+    ]
+    title = "\n".join(title_parts)
+
+    if len(data) == 0:
+        data.loc[start_str] = 0
+        data.loc[end_str] = 0
+    
+    data = add_missing_aggregate_months(data)
+
+    data.plot(
+        kind = 'bar',
+        title = title,
+        ylabel = "Event Count",
+        xlabel = "Month",
+        rot = 0,
+        legend = False,
+    )
+    plt.tight_layout()
+
+    # Create the buffer and return it so it can be sent to the requester
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format=format)
+    plt.close()
+
+    buffer.seek(0)
+
+    return buffer

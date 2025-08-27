@@ -93,12 +93,15 @@ def timeseries_query(
     return query.group_by("month").order_by("month")
 
 
+# TODO: This isn't actually returning a climatology, but just an aggregate total
+# of events by month-of-year.
 def climatology_query(
     db: Session,
     *,
     start: dt.datetime,
     end: dt.datetime,
     polygon: str | None = None,
+    stations: list[str] | None = None,
 ) -> RowReturningQuery[tuple[int, int]]:
     query = db.query(
         func.extract("month", Event.time_start).label("month"),
@@ -113,6 +116,41 @@ def climatology_query(
                 func.ST_SetSRID(func.ST_GeomFromText(polygon), 4326),
             )
         )
+
+    if stations:
+        query = query.filter(Event.station_id.in_(stations))
+
+    return query.group_by("month").order_by("month")
+
+
+# NOTE: As of 2025-08-26, this is a duplicate of the above.  That is so when
+# the Climatology query is eventually fixed to do an actual climatology, the
+# totals router would not have to be refactored.  This note can be removed
+# at that point.
+def totals_query(
+    db: Session,
+    *,
+    start: dt.datetime,
+    end: dt.datetime,
+    polygon: str | None = None,
+    stations: list[str] | None = None,
+) -> RowReturningQuery[tuple[int, int]]:
+    query = db.query(
+        func.extract("month", Event.time_start).label("month"),
+        func.count(Event.time_start).label("count"),
+    ).filter(*_rain_on_snow_event_filter(start=start, end=end))
+
+    if polygon:
+        query = query.join(
+            Station,  # TODO: Event.station relationship
+        ).filter(
+            Station.location.ST_Within(
+                func.ST_SetSRID(func.ST_GeomFromText(polygon), 4326),
+            )
+        )
+
+    if stations:
+        query = query.filter(Event.station_id.in_(stations))
 
     return query.group_by("month").order_by("month")
 
