@@ -21,10 +21,10 @@ jobs:
     name: Build Python package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: hynek/build-and-inspect-python-package@v2
+      - uses: hynek/build-and-inspect-python-package@v2.18.0
 
   # publish-python-package:
   #   name: Publish Python package to PyPI
